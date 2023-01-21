@@ -4,12 +4,13 @@
 
 #pragma once
 
+#include <numbers>
+
 #include <frc/ADIS16470_IMU.h>
 #include <frc/geometry/Translation2d.h>
 #include <frc/geometry/Pose2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
-#include <wpi/numbers>
 #include <frc/shuffleboard/Shuffleboard.h>
 #include <frc/shuffleboard/ShuffleboardLayout.h>
 #include <frc/shuffleboard/ShuffleboardTab.h>
