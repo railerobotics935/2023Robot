@@ -6,6 +6,21 @@
 
 #include <frc/TimedRobot.h>
 
+
+#include <frc/smartdashboard/SendableChooser.h>
+#include <frc/smartdashboard/Field2d.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/DriverStation.h>
+#include <frc/shuffleboard/Shuffleboard.h>
+#include <frc/shuffleboard/ShuffleboardLayout.h>
+#include <frc/shuffleboard/ShuffleboardTab.h>
+#include <networktables/NetworkTableEntry.h>
+#include <networktables/NetworkTableInstance.h>
+#include <frc/filter/SlewRateLimiter.h>
+#include <frc/XboxController.h>
+#include <frc/MathUtil.h>
+#include <frc/SerialPort.h>
+
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
@@ -25,4 +40,8 @@ class Robot : public frc::TimedRobot {
 
   void SimulationInit() override;
   void SimulationPeriodic() override;
+  
+ private:
+ frc::XboxController m_driveController{0};
+
 };
