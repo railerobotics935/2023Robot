@@ -21,7 +21,15 @@ void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {}
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  
+  // Drive
+  DriveWithJoystick(feildReletive);
+
+  // Button Inputs
+  if (m_driveController.GetRawButton(9))
+    feildReletive = !feildReletive;
+}
 
 void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}

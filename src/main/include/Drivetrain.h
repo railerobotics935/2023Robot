@@ -28,17 +28,17 @@ class Drivetrain
 public:
   Drivetrain();
 
-  void ResetOdometry(const frc::Pose2d& pose);
-  void ResetGyro();
-  void Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
+//  void ResetOdometry(const frc::Pose2d& pose);
+//  void ResetGyro();
+  void Drive(units::velocity::meters_per_second_t xSpeed, units::velocity::meters_per_second_t ySpeed,
               units::radians_per_second_t rot, bool fieldRelative);
-  void FaceTarget();
+
   void SetAnglePIDValues(double Kp, double Ki, double Kd, double offsetRadians);
 
   const frc::Pose2d& GetPose();
 
-  static constexpr units::meters_per_second_t kMaxSpeed = 4.0_mps;  // 4 meters per second
-  static constexpr units::radians_per_second_t kMaxAngularSpeed{3 * wpi::numbers::pi};  // 2 rotations per second
+  static constexpr units::velocity::meters_per_second_t kMaxSpeed = 4.0_mps;  // 4 meters per second
+  static constexpr units::radians_per_second_t kMaxAngularSpeed{3 * std::numbers::pi};  // 2 rotations per second
 
 private:
   // Declaring all of the network table entrys
@@ -90,5 +90,6 @@ private:
   frc::PIDController m_yawPID{yawKp, yawKi, yawKd};
   
   frc::SwerveDriveKinematics<4> m_kinematics{m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation};
-  frc::SwerveDriveOdometry<4> m_odometry{m_kinematics, m_gyro.GetAngle()};
+  frc::SwerveDriveOdometry<4> m_odometry{m_kinematics, m_gyro.GetAngle(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+       m_backLeft.GetPosition(), m_backRight.GetPosition()}};
 };

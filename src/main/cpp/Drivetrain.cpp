@@ -36,17 +36,25 @@ Drivetrain::Drivetrain()
   nte_robot_y = nt_table->GetEntry("Swerve Drive/Robot Y");
 }
 
+/*
+
+Didn't work for some reason. If we don't have to reset the odometry of the robot the better
+
 void Drivetrain::ResetOdometry(const frc::Pose2d& pose)
 {
-  m_odometry.ResetPosition(pose, m_gyro.GetAngle());
+  m_odometry.ResetPosition(m_gyro.GetAngle(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+       m_backLeft.GetPosition(), m_backRight.GetPosition()},pose);
 }
+
+
 
 void Drivetrain::ResetGyro()
 {
   m_gyro.Reset();
 }
+*/
 
-void Drivetrain::Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
+void Drivetrain::Drive(units::velocity::meters_per_second_t xSpeed, units::velocity::meters_per_second_t ySpeed,
                        units::radians_per_second_t rot, bool fieldRelative)
 {
   auto states = m_kinematics.ToSwerveModuleStates(
@@ -80,20 +88,16 @@ void Drivetrain::Drive(units::meters_per_second_t xSpeed, units::meters_per_seco
   nte_bl_act_speed.SetDouble((double)m_backLeft.GetState().speed);
   nte_br_act_speed.SetDouble((double)m_backRight.GetState().speed);
 
-  m_odometry.Update(m_gyro.GetAngle(), m_frontLeft.GetState(), m_frontRight.GetState(),
-                    m_backLeft.GetState(), m_backRight.GetState());
-
+m_odometry.Update(m_gyro.GetAngle(),
+                    {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+                     m_backLeft.GetPosition(), m_backRight.GetPosition()});
+                     
   nte_gyro_angle.SetDouble((double)m_odometry.GetPose().Rotation().Radians());
   nte_robot_x.SetDouble((double)m_odometry.GetPose().X());
   nte_robot_y.SetDouble((double)m_odometry.GetPose().Y());
 }
 
-void Drivetrain::FaceTarget()
-{
-  rotPower = m_yawPID.Calculate((double)GetPose().Rotation().Radians());
 
-  Drive(units::meters_per_second_t(0),units::meters_per_second_t(0), units::radians_per_second_t(rotPower), true);
-}
 
 void Drivetrain::SetAnglePIDValues(double Kp, double Ki, double Kd, double offsetRadians)
 {
