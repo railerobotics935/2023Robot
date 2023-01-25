@@ -65,13 +65,11 @@ private:
   nt::NetworkTableEntry nte_robot_y;
 
   // Righthand rule coordinate system: X positive to front, Y positive to left
-
-  // NEED TO UPDATE
-
-  frc::Translation2d m_frontLeftLocation{+0.324_m, +0.2675_m};
-  frc::Translation2d m_frontRightLocation{+0.324_m, -0.2675_m};
-  frc::Translation2d m_backLeftLocation{-0.324_m, +0.2675_m};
-  frc::Translation2d m_backRightLocation{-0.324_m, -0.2675_m};
+  // Dimentions of the center of the wheeles - 22.5cm by 70.8  
+  frc::Translation2d m_frontLeftLocation{+0.354_m, +0.1125_m};
+  frc::Translation2d m_frontRightLocation{+0.354_m, -0.1125_m};
+  frc::Translation2d m_backLeftLocation{-0.354_m, +0.1125_m};
+  frc::Translation2d m_backRightLocation{-0.354_m, -0.1125_m};
 
   // Creating the four swerve modules
   SwerveModule m_frontLeft{4, 0, 0};
