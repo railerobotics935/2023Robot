@@ -27,7 +27,7 @@
 class SwerveModule
 {
 public:
-  SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningEncoderChannel);
+  SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningEncoderChannel, double turingEncoderOffset);
   
   frc::SwerveModuleState GetState() const;
   frc::SwerveModulePosition GetPosition() const;
@@ -43,6 +43,8 @@ private:
 
   static constexpr auto kModuleMaxAngularVelocity = 8.0 * std::numbers::pi * 1_rad_per_s;  // radians per second
   static constexpr auto kModuleMaxAngularAcceleration = 6.0 * std::numbers::pi * 2_rad_per_s / 1_s;  // radians per second^2
+
+  double kTuringEncoderOffset;
 
   rev::CANSparkMax m_driveMotor;
   rev::CANSparkMax m_turningMotor;

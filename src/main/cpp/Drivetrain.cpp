@@ -38,7 +38,7 @@ Drivetrain::Drivetrain()
 
 /*
 
-Didn't work for some reason. If we don't have to reset the odometry of the robot the better
+Didn't work for some reason. If we don't have to reset the odometry of the robot then we shouldn't...
 
 void Drivetrain::ResetOdometry(const frc::Pose2d& pose)
 {

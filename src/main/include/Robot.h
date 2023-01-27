@@ -44,8 +44,8 @@ public:
   void SimulationPeriodic() override;
   
 private:
-    frc::XboxController m_driveController{0};
 
+  frc::XboxController m_driveController{0};
   Drivetrain m_swerve;
   
   bool feildReletive = true;

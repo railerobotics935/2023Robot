@@ -71,11 +71,18 @@ private:
   frc::Translation2d m_backLeftLocation{-0.354_m, +0.1125_m};
   frc::Translation2d m_backRightLocation{-0.354_m, -0.1125_m};
 
+  // Offsets in radians for the encoders. ???? 0 degrees = straight forward ???? 
+  double flEncoderOffset = 0.0;
+  double frEncoderOffset = 0.0;
+  double blEncoderOffset = 0.0;
+  double brEncoderOffset = 0.0;
+
+
   // Creating the four swerve modules
-  SwerveModule m_frontLeft{4, 0, 0};
-  SwerveModule m_frontRight{5, 1, 1};
-  SwerveModule m_backLeft{6, 2, 2};
-  SwerveModule m_backRight{7, 3, 3};
+  SwerveModule m_frontLeft{4, 0, 0, flEncoderOffset};
+  SwerveModule m_frontRight{5, 1, 1, frEncoderOffset};
+  SwerveModule m_backLeft{6, 2, 2, blEncoderOffset};
+  SwerveModule m_backRight{7, 3, 3, brEncoderOffset};
 
   frc::ADIS16470_IMU m_gyro;
 
