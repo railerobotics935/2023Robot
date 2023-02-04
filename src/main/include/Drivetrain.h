@@ -51,14 +51,14 @@ private:
   nt::NetworkTableEntry nte_bl_set_speed;
   nt::NetworkTableEntry nte_br_set_speed;
   
-  nt::NetworkTableEntry nte_fl_act_angle;
-  nt::NetworkTableEntry nte_fr_act_angle;
-  nt::NetworkTableEntry nte_bl_act_angle;
-  nt::NetworkTableEntry nte_br_act_angle;
-  nt::NetworkTableEntry nte_fl_act_speed;
-  nt::NetworkTableEntry nte_fr_act_speed;
-  nt::NetworkTableEntry nte_bl_act_speed;
-  nt::NetworkTableEntry nte_br_act_speed;
+  nt::NetworkTableEntry nte_fl_real_angle;
+  nt::NetworkTableEntry nte_fr_real_angle;
+  nt::NetworkTableEntry nte_bl_real_angle;
+  nt::NetworkTableEntry nte_br_real_angle;
+  nt::NetworkTableEntry nte_fl_real_speed;
+  nt::NetworkTableEntry nte_fr_real_speed;
+  nt::NetworkTableEntry nte_bl_real_speed;
+  nt::NetworkTableEntry nte_br_real_speed;
 
   nt::NetworkTableEntry nte_gyro_angle;
   nt::NetworkTableEntry nte_robot_x;
@@ -77,12 +77,11 @@ private:
   double blEncoderOffset = 0.0;
   double brEncoderOffset = 0.0;
 
-
   // Creating the four swerve modules
-  SwerveModule m_frontLeft{4, 0, 0, flEncoderOffset};
-  SwerveModule m_frontRight{5, 1, 1, frEncoderOffset};
-  SwerveModule m_backLeft{6, 2, 2, blEncoderOffset};
-  SwerveModule m_backRight{7, 3, 3, brEncoderOffset};
+  SwerveModule m_frontLeft{11, 12, 0, flEncoderOffset};
+  SwerveModule m_frontRight{9, 10, 1, frEncoderOffset};
+  SwerveModule m_backLeft{19, 20, 2, blEncoderOffset};
+  SwerveModule m_backRight{1, 2, 3, brEncoderOffset};
 
   frc::ADIS16470_IMU m_gyro;
 

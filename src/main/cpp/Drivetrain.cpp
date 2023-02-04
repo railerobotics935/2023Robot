@@ -22,14 +22,14 @@ Drivetrain::Drivetrain()
   nte_bl_set_speed = nt_table->GetEntry("Swerve Drive/Back Left/Set Speed");
   nte_br_set_speed = nt_table->GetEntry("Swerve Drive/Back Right/Set Speed");
 
-  nte_fl_act_angle = nt_table->GetEntry("Swerve Drive/Front Left/Act Angle");
-  nte_fr_act_angle = nt_table->GetEntry("Swerve Drive/Front Right/Act Angle");
-  nte_bl_act_angle = nt_table->GetEntry("Swerve Drive/Back Left/Act Angle");
-  nte_br_act_angle = nt_table->GetEntry("Swerve Drive/Back Right/Act Angle");
-  nte_fl_act_speed = nt_table->GetEntry("Swerve Drive/Front Left/Act Speed");
-  nte_fr_act_speed = nt_table->GetEntry("Swerve Drive/Front Right/Act Speed");
-  nte_bl_act_speed = nt_table->GetEntry("Swerve Drive/Back Left/Act Speed");
-  nte_br_act_speed = nt_table->GetEntry("Swerve Drive/Back Right/Act Speed");
+  nte_fl_real_angle = nt_table->GetEntry("Swerve Drive/Front Left/Act Angle");
+  nte_fr_real_angle = nt_table->GetEntry("Swerve Drive/Front Right/Act Angle");
+  nte_bl_real_angle = nt_table->GetEntry("Swerve Drive/Back Left/Act Angle");
+  nte_br_real_angle = nt_table->GetEntry("Swerve Drive/Back Right/Act Angle");
+  nte_fl_real_speed = nt_table->GetEntry("Swerve Drive/Front Left/Act Speed");
+  nte_fr_real_speed = nt_table->GetEntry("Swerve Drive/Front Right/Act Speed");
+  nte_bl_real_speed = nt_table->GetEntry("Swerve Drive/Back Left/Act Speed");
+  nte_br_real_speed = nt_table->GetEntry("Swerve Drive/Back Right/Act Speed");
 
   nte_gyro_angle = nt_table->GetEntry("Swerve Drive/Gyro Angle");
   nte_robot_x = nt_table->GetEntry("Swerve Drive/Robot X");
@@ -79,14 +79,14 @@ void Drivetrain::Drive(units::velocity::meters_per_second_t xSpeed, units::veloc
   m_backLeft.SetDesiredState(bl);
   m_backRight.SetDesiredState(br);
 
-  nte_fl_act_angle.SetDouble((double)m_frontLeft.GetState().angle.Radians());
-  nte_fr_act_angle.SetDouble((double)m_frontRight.GetState().angle.Radians());
-  nte_bl_act_angle.SetDouble((double)m_backLeft.GetState().angle.Radians());
-  nte_br_act_angle.SetDouble((double)m_backRight.GetState().angle.Radians());
-  nte_fl_act_speed.SetDouble((double)m_frontLeft.GetState().speed);
-  nte_fr_act_speed.SetDouble((double)m_frontRight.GetState().speed);
-  nte_bl_act_speed.SetDouble((double)m_backLeft.GetState().speed);
-  nte_br_act_speed.SetDouble((double)m_backRight.GetState().speed);
+  nte_fl_real_angle.SetDouble((double)m_frontLeft.GetState().angle.Radians());
+  nte_fr_real_angle.SetDouble((double)m_frontRight.GetState().angle.Radians());
+  nte_bl_real_angle.SetDouble((double)m_backLeft.GetState().angle.Radians());
+  nte_br_real_angle.SetDouble((double)m_backRight.GetState().angle.Radians());
+  nte_fl_real_speed.SetDouble((double)m_frontLeft.GetState().speed);
+  nte_fr_real_speed.SetDouble((double)m_frontRight.GetState().speed);
+  nte_bl_real_speed.SetDouble((double)m_backLeft.GetState().speed);
+  nte_br_real_speed.SetDouble((double)m_backRight.GetState().speed);
 
 m_odometry.Update(m_gyro.GetAngle(),
                     {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
