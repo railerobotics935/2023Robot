@@ -27,7 +27,7 @@
 class SwerveModule
 {
 public:
-  SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningEncoderChannel, double turingEncoderOffset);
+  SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningEncoderChannel, double turningEncoderOffset);
   
   frc::SwerveModuleState GetState() const;
   frc::SwerveModulePosition GetPosition() const;
@@ -39,12 +39,12 @@ private:
 
   static constexpr double kWheelRadius = 0.0508;
   static constexpr int kEncoderResolution = 42;
-  static constexpr double kGearRatio = 6.67;
+  static constexpr double kGearRatio = 6.75;
 
   static constexpr auto kModuleMaxAngularVelocity = 8.0 * std::numbers::pi * 1_rad_per_s;  // radians per second
   static constexpr auto kModuleMaxAngularAcceleration = 6.0 * std::numbers::pi * 2_rad_per_s / 1_s;  // radians per second^2
 
-  double kTuringEncoderOffset;
+  double kTurningEncoderOffset;
 
   rev::CANSparkMax m_driveMotor;
   rev::CANSparkMax m_turningMotor;
@@ -55,12 +55,12 @@ private:
   //frc::sim::EncoderSim m_driveEncoderSim{m_driveEncoder};
   //frc::sim::EncoderSim m_turingEncoderSim{m_turningEncoder};
 
-  frc2::PIDController m_drivePIDController{2.0, 0, 0};
+  frc2::PIDController m_drivePIDController{1.0, 0.0, 0.0};
 
   frc::ProfiledPIDController<units::radians> m_turningPIDController{
       10.0, 0.0, 0.0,
       {kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration}};
 
   frc::SimpleMotorFeedforward<units::meters> m_driveFeedforward{0.5_V, 1_V / 1_mps};
-  frc::SimpleMotorFeedforward<units::radians> m_turnFeedforward{1_V, 1_V / 1_rad_per_s};
+  frc::SimpleMotorFeedforward<units::radians> m_turnFeedforward{0.5_V, 0.5_V / 1_rad_per_s};
 };

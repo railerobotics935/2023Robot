@@ -30,14 +30,14 @@ public:
 
 //  void ResetOdometry(const frc::Pose2d& pose);
 //  void ResetGyro();
-  void Drive(units::velocity::meters_per_second_t xSpeed, units::velocity::meters_per_second_t ySpeed,
+  void Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
               units::radians_per_second_t rot, bool fieldRelative);
 
   void SetAnglePIDValues(double Kp, double Ki, double Kd, double offsetRadians);
 
   const frc::Pose2d& GetPose();
 
-  static constexpr units::velocity::meters_per_second_t kMaxSpeed = 4.0_mps;  // 4 meters per second
+  static constexpr units::meters_per_second_t kMaxSpeed = 4.0_mps;  // 4 meters per second
   static constexpr units::radians_per_second_t kMaxAngularSpeed{3 * std::numbers::pi};  // 2 rotations per second
 
 private:
@@ -71,11 +71,16 @@ private:
   frc::Translation2d m_backLeftLocation{-0.354_m, +0.1125_m};
   frc::Translation2d m_backRightLocation{-0.354_m, -0.1125_m};
 
-  // Offsets in radians for the encoders. ???? 0 degrees = straight forward ???? 
-  double flEncoderOffset = 0.0;
-  double frEncoderOffset = 0.0;
-  double blEncoderOffset = 0.0;
-  double brEncoderOffset = 0.0;
+  // Offsets in radians for the encoders. 
+  double flEncoderOffset = 0.939;
+  double frEncoderOffset = 2.605;
+  double blEncoderOffset = -0.245;
+  double brEncoderOffset = -1.877;
+
+//double flEncoderOffset = 4.117;
+//double frEncoderOffset = 5.73;
+//double blEncoderOffset = 2.88;
+//double brEncoderOffset = 1.13;
 
   // Creating the four swerve modules
   SwerveModule m_frontLeft{11, 12, 0, flEncoderOffset};

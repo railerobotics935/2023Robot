@@ -22,14 +22,14 @@ Drivetrain::Drivetrain()
   nte_bl_set_speed = nt_table->GetEntry("Swerve Drive/Back Left/Set Speed");
   nte_br_set_speed = nt_table->GetEntry("Swerve Drive/Back Right/Set Speed");
 
-  nte_fl_real_angle = nt_table->GetEntry("Swerve Drive/Front Left/Act Angle");
-  nte_fr_real_angle = nt_table->GetEntry("Swerve Drive/Front Right/Act Angle");
-  nte_bl_real_angle = nt_table->GetEntry("Swerve Drive/Back Left/Act Angle");
-  nte_br_real_angle = nt_table->GetEntry("Swerve Drive/Back Right/Act Angle");
-  nte_fl_real_speed = nt_table->GetEntry("Swerve Drive/Front Left/Act Speed");
-  nte_fr_real_speed = nt_table->GetEntry("Swerve Drive/Front Right/Act Speed");
-  nte_bl_real_speed = nt_table->GetEntry("Swerve Drive/Back Left/Act Speed");
-  nte_br_real_speed = nt_table->GetEntry("Swerve Drive/Back Right/Act Speed");
+  nte_fl_real_angle = nt_table->GetEntry("Swerve Drive/Front Left/Real Angle");
+  nte_fr_real_angle = nt_table->GetEntry("Swerve Drive/Front Right/Real Angle");
+  nte_bl_real_angle = nt_table->GetEntry("Swerve Drive/Back Left/Real Angle");
+  nte_br_real_angle = nt_table->GetEntry("Swerve Drive/Back Right/Real Angle");
+  nte_fl_real_speed = nt_table->GetEntry("Swerve Drive/Front Left/Real Speed");
+  nte_fr_real_speed = nt_table->GetEntry("Swerve Drive/Front Right/Real Speed");
+  nte_bl_real_speed = nt_table->GetEntry("Swerve Drive/Back Left/Real Speed");
+  nte_br_real_speed = nt_table->GetEntry("Swerve Drive/Back Right/Real Speed");
 
   nte_gyro_angle = nt_table->GetEntry("Swerve Drive/Gyro Angle");
   nte_robot_x = nt_table->GetEntry("Swerve Drive/Robot X");
@@ -54,7 +54,7 @@ void Drivetrain::ResetGyro()
 }
 */
 
-void Drivetrain::Drive(units::velocity::meters_per_second_t xSpeed, units::velocity::meters_per_second_t ySpeed,
+void Drivetrain::Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
                        units::radians_per_second_t rot, bool fieldRelative)
 {
   auto states = m_kinematics.ToSwerveModuleStates(
