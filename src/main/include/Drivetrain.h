@@ -74,13 +74,8 @@ private:
   // Offsets in radians for the encoders. 
   double flEncoderOffset = 0.939;
   double frEncoderOffset = 2.605;
-  double blEncoderOffset = -0.245;
+  double blEncoderOffset = -0.234;
   double brEncoderOffset = -1.877;
-
-//double flEncoderOffset = 4.117;
-//double frEncoderOffset = 5.73;
-//double blEncoderOffset = 2.88;
-//double brEncoderOffset = 1.13;
 
   // Creating the four swerve modules
   SwerveModule m_frontLeft{11, 12, 0, flEncoderOffset};

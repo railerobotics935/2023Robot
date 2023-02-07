@@ -41,8 +41,8 @@ private:
   static constexpr int kEncoderResolution = 42;
   static constexpr double kGearRatio = 6.75;
 
-  static constexpr auto kModuleMaxAngularVelocity = 8.0 * std::numbers::pi * 1_rad_per_s;  // radians per second
-  static constexpr auto kModuleMaxAngularAcceleration = 6.0 * std::numbers::pi * 2_rad_per_s / 1_s;  // radians per second^2
+  static constexpr auto kModuleMaxAngularVelocity = 18.0 * std::numbers::pi * 1_rad_per_s;  // radians per second
+  static constexpr auto kModuleMaxAngularAcceleration = 18.0 * std::numbers::pi * 2_rad_per_s / 1_s;  // radians per second^2
 
   double kTurningEncoderOffset;
 
@@ -58,7 +58,7 @@ private:
   frc2::PIDController m_drivePIDController{1.0, 0.0, 0.0};
 
   frc::ProfiledPIDController<units::radians> m_turningPIDController{
-      10.0, 0.0, 0.0,
+      13.5, 190.0, 0.20,
       {kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration}};
 
   frc::SimpleMotorFeedforward<units::meters> m_driveFeedforward{0.5_V, 1_V / 1_mps};
