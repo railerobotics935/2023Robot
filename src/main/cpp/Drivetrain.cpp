@@ -98,6 +98,26 @@ m_odometry.Update(m_gyro.GetAngle(),
 }
 
 
+// Park method to lock the wheels rotation in an X shape, applying no power to the drive motors
+void Drivetrain::Park()
+{
+
+  frc::SwerveModuleState fl;
+  frc::SwerveModuleState fr;
+  frc::SwerveModuleState bl;
+  frc::SwerveModuleState br;
+
+  fl.angle = frc::Rotation2d (units::radian_t(std::numbers::pi / 4));
+  fr.angle = frc::Rotation2d (units::radian_t(-std::numbers::pi / 4));
+  bl.angle = frc::Rotation2d (units::radian_t(-std::numbers::pi / 4));
+  br.angle = frc::Rotation2d (units::radian_t(std::numbers::pi / 4));
+
+  m_frontLeft.SetDesiredState(fl);
+  m_frontRight.SetDesiredState(fr);
+  m_backLeft.SetDesiredState(bl);
+  m_backRight.SetDesiredState(br);
+}
+
 
 void Drivetrain::SetAnglePIDValues(double Kp, double Ki, double Kd, double offsetRadians)
 {

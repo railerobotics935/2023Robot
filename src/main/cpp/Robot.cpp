@@ -23,12 +23,24 @@ void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   
-  // Drive
-  DriveWithJoystick(fieldReletive);
+  if (isParked)
+  {
+    m_swerve.Park();
+  }
+  else
+  {
+    // Drive
+    DriveWithJoystick(fieldRelative);
+  }
 
   // Button Inputs
-  if (m_driveController.GetRawButton(9))
-    fieldReletive = !fieldReletive;
+  // Back Button
+  if (m_driveController.GetRawButtonPressed(9))
+    fieldRelative = !fieldRelative;
+  
+  // Red Button
+  if (m_driveController.GetRawButtonPressed(3))
+    isParked = !isParked;
 }
 
 void Robot::DisabledInit() {}

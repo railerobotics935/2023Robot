@@ -32,6 +32,8 @@ public:
 //  void ResetGyro();
   void Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
               units::radians_per_second_t rot, bool fieldRelative);
+  
+  void Park();
 
   void SetAnglePIDValues(double Kp, double Ki, double Kd, double offsetRadians);
 
