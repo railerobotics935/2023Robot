@@ -41,6 +41,9 @@ void Robot::TeleopPeriodic() {
   // Red Button
   if (m_driveController.GetRawButtonPressed(3))
     isParked = !isParked;
+  
+  if (m_driveController.GetRawButtonPressed(4))
+    m_swerve.ResetGyro();
 }
 
 void Robot::DisabledInit() {}
@@ -58,7 +61,6 @@ void Robot::DriveWithJoystick(bool fieldRelative) {
     // negative values when we push forward.
     const auto xSpeed = -m_xspeedLimiter.Calculate(frc::ApplyDeadband(m_driveController.GetRawAxis(1), 0.05)) * Drivetrain::kMaxSpeed;
     
-
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.

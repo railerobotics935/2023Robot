@@ -58,7 +58,7 @@ private:
   frc2::PIDController m_drivePIDController{1.0, 0.0, 0.0};
 
   frc::ProfiledPIDController<units::radians> m_turningPIDController{
-      13.5, 190.0, 0.20,
+      12.5, 190.0, 0.15,
       {kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration}};
 
   frc::SimpleMotorFeedforward<units::meters> m_driveFeedforward{0.5_V, 1_V / 1_mps};

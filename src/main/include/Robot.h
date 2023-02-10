@@ -53,7 +53,7 @@ private:
   frc::SlewRateLimiter<units::scalar> m_yspeedLimiter{3 / 1_s};
   frc::SlewRateLimiter<units::scalar> m_rotLimiter{3 / 1_s};
 
-  bool fieldRelative = false;
+  bool fieldRelative = true;
   bool isParked = false;
 
   void DriveWithJoystick(bool fieldRelative);

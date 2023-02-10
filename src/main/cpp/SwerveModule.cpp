@@ -22,6 +22,7 @@ SwerveModule::SwerveModule(const int driveMotorChannel,
 
   // Invert turning motor so it turns CCW for positive voltage
   m_turningMotor.SetInverted(true);
+  m_driveMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 
   // Limit the PID Controller's input range between -pi and pi and set the input
   // to be continuous.
