@@ -21,8 +21,8 @@
 #include <frc/SerialPort.h>
 #include <frc/GenericHID.h>
 #include <frc/Servo.h>
-#include <frc/AnalogPotentiometer.h>
 
+#include "ArmFunctions.h"
 #include "Drivetrain.h"
 
 class Robot : public frc::TimedRobot {
@@ -48,38 +48,20 @@ public:
 private:
   double ANALOG_TO_RAD_FACTOR = 1.2566;     // 0 to 5.0 volt = 2PI rad
 
-  frc::XboxController m_driveController{0};
+  frc::XboxController m_driveController{0}; // one of the rc controllers
   frc::GenericHID m_armController{2};
   frc::XboxController m_opController{1};
 
+  // Servedrive and arm objects
   Drivetrain m_swerve;
+  ArmFunctions m_arm;
 
   // Drive variables
   double driveJoystickAdjustedInputX = 0.0;
   double driveJoystickAdjustedInputY = 0.0;
 
-  double turretEncoderOffset = 0.0;
-  double lowerArmEncoderOffset = 0.0;
-  double pushrodArmEcoderOffset = 0.0;
-
-  // Arm Things
-  frc::AnalogPotentiometer turretEncoder{4, (2 * std::numbers::pi), (-(std::numbers::pi + turretEncoderOffset))};
-  frc::AnalogPotentiometer lowerArmEncoder{5, (2 * std::numbers::pi), (-(std::numbers::pi + lowerArmEncoderOffset))};
-  frc::AnalogPotentiometer pushrodArmEncoder{6, (2 * std::numbers::pi), (-(std::numbers::pi + pushrodArmEcoderOffset))};
-  frc::Servo wristServo{0};
-  frc::DigitalInput intakeSwitch{0};
-
-  rev::CANSparkMax lowerArmMotor{13, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax pushrodArm{17, rev::CANSparkMax::MotorType::kBrushless};
-  VictorSPX turretMotor{14};
-  VictorSPX intakeMotor{15};
-
   bool automaticPlacing = false;
-  
-  // Network Tables
-  nt::NetworkTableEntry nte_turretEncoder;
-  nt::NetworkTableEntry nte_lowerArmEncoder;
-  nt::NetworkTableEntry nte_pushRodArmEncoder;
+
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0
   // to 1.
   frc::SlewRateLimiter<units::scalar> m_xspeedLimiter{3 / 1_s};

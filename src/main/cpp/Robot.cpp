@@ -12,19 +12,12 @@
 #include <frc/shuffleboard/ShuffleboardLayout.h>
 #include <frc/shuffleboard/ShuffleboardTab.h>
 #include "Robot.h"
+#include "ArmFunctions.h"
 
-void Robot::RobotInit() {
-
-  // Initialize shuffleboard communication
-  
-  auto nt_inst = nt::NetworkTableInstance::GetDefault();
-  auto nt_table = nt_inst.GetTable("datatable");
-  nte_turretEncoder = nt_table->GetEntry("Arm/Turret Encoder");
-  nte_lowerArmEncoder = nt_table->GetEntry("Arm/Lower Arm Encoder");
-  nte_pushRodArmEncoder = nt_table->GetEntry("Arm/Pushrod Arm Encoder");
-  
+void Robot::RobotInit() {}
+void Robot::RobotPeriodic() {
+  m_arm.UpdateNTE();
 }
-void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
@@ -32,36 +25,34 @@ void Robot::AutonomousPeriodic() {}
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
   
+  // Drive
   if (isParked)
   {
     m_swerve.Park();
   }
   else
   {
-    // Drive
     DriveWithJoystick(fieldRelative);
   }
 
   // Button Inputs
-  // Back Button
-  if (m_driveController.GetRawButtonPressed(9))
+  // Red Button
+  if (m_driveController.GetRawButtonPressed(3))
     fieldRelative = !fieldRelative;
   
   // Red Button
-  if (m_driveController.GetRawButtonPressed(3))
-    isParked = !isParked;
+  if (m_driveController.GetRawButton(1))
+    isParked = true;
+  else
+    isParked = false;
   
   if (m_driveController.GetRawButtonPressed(4))
     m_swerve.ResetGyro();
 
   // Arm Control
-
-  // Update Network Table Values
-  nte_turretEncoder.SetDouble(turretEncoder.Get());
-  nte_lowerArmEncoder.SetDouble(lowerArmEncoder.Get());
-  nte_pushRodArmEncoder.SetDouble(pushrodArmEncoder.Get());
-
-  turretMotor.Set(VictorSPXControlMode::PercentOutput,  m_opController.GetRawAxis(0));
+  m_arm.SetTurretMotor(m_opController.GetRawAxis(0));
+  m_arm.SetLowerArmMotor(m_opController.GetRawAxis(1));
+  m_arm.SetPushrodArmMotor(m_opController.GetRawAxis(3));
 }
 
 void Robot::DisabledInit() {}
@@ -125,11 +116,13 @@ void Robot::DriveWithJoystick(bool fieldRelative) {
     }
     */
     // Exponetal adjustment for the controller
-    driveJoystickAdjustedInputX = (frc::ApplyDeadband(m_driveController.GetRawAxis(1), 0.05) * frc::ApplyDeadband(m_driveController.GetRawAxis(1), 0.05));
-    driveJoystickAdjustedInputY = (frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.05) * frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.05));
-    if (frc::ApplyDeadband(m_driveController.GetRawAxis(1), 0.05) < 0)
+    driveJoystickAdjustedInputX = ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.05)) * (1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.05)));
+    driveJoystickAdjustedInputY = ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)) * (1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)));
+
+    if ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.05)) < 0)
       driveJoystickAdjustedInputX = -driveJoystickAdjustedInputX;
-    if (frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.05) < 0)
+
+    if ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)) < 0)
       driveJoystickAdjustedInputY = -driveJoystickAdjustedInputY;
 
     // Get the x speed. We are inverting this because Xbox controllers return
@@ -139,13 +132,13 @@ void Robot::DriveWithJoystick(bool fieldRelative) {
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    const auto ySpeed = -m_yspeedLimiter.Calculate(driveJoystickAdjustedInputY) * Drivetrain::kMaxSpeed;
+    const auto ySpeed = m_yspeedLimiter.Calculate(driveJoystickAdjustedInputY) * Drivetrain::kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW introllers return posits positive in
     // mathematics). Xbox coive values when you pull to
     // the right by default.
-    const auto rot = -m_rotLimiter.Calculate(frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)) * Drivetrain::kMaxAngularSpeed;
+    const auto rot = -m_rotLimiter.Calculate((1.25 *frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.05))) * Drivetrain::kMaxAngularSpeed;
 
     m_swerve.Drive(xSpeed, ySpeed, rot, fieldRelative);
   }
