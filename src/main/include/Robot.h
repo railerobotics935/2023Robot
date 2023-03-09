@@ -60,6 +60,8 @@ private:
   double driveJoystickAdjustedInputX = 0.0;
   double driveJoystickAdjustedInputY = 0.0;
 
+  double wristSetAngle = 0.0;
+
   bool automaticPlacing = false;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0

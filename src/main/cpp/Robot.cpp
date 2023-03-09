@@ -53,6 +53,19 @@ void Robot::TeleopPeriodic() {
   m_arm.SetTurretMotor(m_opController.GetRawAxis(0));
   m_arm.SetLowerArmMotor(m_opController.GetRawAxis(1));
   m_arm.SetPushrodArmMotor(m_opController.GetRawAxis(3));
+
+  if (m_opController.GetRawButton(7))
+    m_arm.SetIntakeMotor(1.0);
+  else if (m_opController.GetRawButton(8))
+    m_arm.SetIntakeMotor(-1.0);
+  else
+    m_arm.SetIntakeMotor(0.0);
+  
+  if (m_opController.GetRawButtonPressed(5))
+    wristSetAngle = (wristSetAngle-0.2);
+  if (m_opController.GetRawButtonPressed(6))
+    wristSetAngle = (wristSetAngle+0.2);
+  m_arm.SetWristServo(wristSetAngle);
 }
 
 void Robot::DisabledInit() {}

@@ -22,8 +22,11 @@ public:
   void SetPushrodArmMotor(double precent);
   void SetTurretMotor(double percent);
   void SetIntakeMotor(double precent);
+  void SetWristServo(double angle);
   double GetPushRodArmEncoder();
+  double GetWristServoSensor();
   double GetPushRodArmAngle();
+  double GetWristServoAngle();
   double GetLowerArmAngle();
   double GetTurretAngle();
 
@@ -32,6 +35,7 @@ private:
   double turretEncoderOffset = -0.972;
   double lowerArmEncoderOffset = 2.00 + (0.5 * std::numbers::pi); // measured at pi/2
   double pushrodArmEcoderOffset = 1.694 + (0.5 * std::numbers::pi); // measured at pi/2
+  double wristServoOffset = 0.0;
 
   // Arm Sensors
   frc::AnalogPotentiometer turretEncoder{4, (2.0 * std::numbers::pi), (-(std::numbers::pi + turretEncoderOffset))};
@@ -52,5 +56,6 @@ private:
   nt::NetworkTableEntry nte_lowerArmAngle;
   nt::NetworkTableEntry nte_pushRodArmEncoder;
   nt::NetworkTableEntry nte_pushRodArmAngle;
+  nt::NetworkTableEntry nte_wristServoAngle;
 
 };
