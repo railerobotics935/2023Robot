@@ -8,15 +8,16 @@ ArmFunctions::ArmFunctions()
   auto nt_table = nt_inst.GetTable("datatable");
   nte_turretAngle = nt_table->GetEntry("Arm/Turret Angle");
   nte_lowerArmAngle = nt_table->GetEntry("Arm/Lower Arm Angle");
-  nte_pushRodArmEncoder = nt_table->GetEntry("Debug/Pushrod Arm Encoder Angle");
-  nte_pushRodArmAngle = nt_table->GetEntry("Arm/Pushrod Arm Angle");
+  nte_pushRodArmEncoder = nt_table->GetEntry("Debug/Push Rod Arm Encoder Angle");
+  nte_pushRodArmAngle = nt_table->GetEntry("Arm/Push Rod Arm Angle");
   nte_wristServoAngle = nt_table->GetEntry("Arm/Wrist Angle");
 
   lowerArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-  pushrodArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  pushRodArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
   intakeMotor.SetNeutralMode(NeutralMode::Brake);
 }
 
+// Updates Netowrk table entries, needs to be called every cycle for acurrate values
 void ArmFunctions::UpdateNTE() 
 {
   // Update Network Table Values
@@ -35,58 +36,89 @@ double ArmFunctions::GetLowerArmAngle()
   // invert it for ccw 
   return -lowerArmEncoder.Get();
 }
-// Returns the angle, in radians, of the pushrod arm, reletive to the lower arm
+
+// Returns the angle, in radians, of the push rod arm, reletive to the lower arm
 double ArmFunctions::GetPushRodArmEncoder()
 {
   // invert it for ccw 
-  return -pushrodArmEncoder.Get();
+  return -pushRodArmEncoder.Get();
 }
-// Returns the setpoint, in radians, of the wrist servo, reletive to the pushrod arm
+
+// Returns the setpoint, in radians, of the wrist servo, reletive to the push rod arm
 double ArmFunctions::GetWristServoSensor()
 {
   return (wristServo.Get() * 2 * std::numbers::pi + wristServoOffset);
 }
+
 // Returns the angle, in radians, of the wrist reletive to the robot
 double ArmFunctions::GetWristServoAngle()
 {
   return (GetPushRodArmAngle() + GetWristServoSensor());
 }
-// Returns the angle, in radians, of the pushrod arm reletive to the robot
+
+// Returns the angle, in radians, of the push rod arm reletive to the robot
 double ArmFunctions::GetPushRodArmAngle()
 {
   return (GetPushRodArmEncoder() + GetLowerArmAngle()); 
 }
+
 // Returns the angle, in radians, of the turret
 double ArmFunctions::GetTurretAngle()
 {
   return turretEncoder.Get();
 }
 
-// Set basic motor power
+// Postive values rotates ccw
 void ArmFunctions::SetTurretMotor(double percent)
 {
   turretMotor.Set(motorcontrol::ControlMode::PercentOutput, percent);
 }
-// Set basic motor power
+
+// Positive values rotates the arm ccw
 void ArmFunctions::SetLowerArmMotor(double precent)
 {
   lowerArmMotor.Set(precent);
+  SafteyArmStop();
 }
-// Set basic motor power
-void ArmFunctions::SetPushrodArmMotor(double precent)
+
+// Positive values rotates the arm cw
+void ArmFunctions::SetPushRodArmMotor(double precent)
 {
-  pushrodArmMotor.Set(precent);
+  pushRodArmMotor.Set(precent);
+  SafteyArmStop();
 }
+
 // Sets power to motor
 void ArmFunctions::SetIntakeMotor(double precent)
 {
-  if(!intakeSwitch.Get())
     intakeMotor.Set(motorcontrol::ControlMode::PercentOutput, precent);
-  else
-    intakeMotor.Set(motorcontrol::ControlMode::PercentOutput, 0.0);
 }
-// Sets wrist angle reletive to the pushrod arm
+
+// Sets wrist angle reletive to the push rod arm
 void ArmFunctions::SetWristServo(double angle)
 {
-  wristServo.Set((angle/(2*std::numbers::pi)));
+  wristServo.Set((angle + wristServoOffset)/(2*std::numbers::pi));
+}
+
+// Basic Saftey stop. If it goes further than specified limit, it sets power the other direction.
+void ArmFunctions::SafteyArmStop()
+{
+  if (GetLowerArmAngle() > lowerArmMax)
+    SetLowerArmMotor(0.3);
+//  if (GetLowerArmAngle() < lowerArmMin)
+//    SetLowerArmMotor(-0.3);
+
+  // Remeber because the pushrod arm rotates the oposate direction, it looks inverted, but the angle reference is the same
+//  if (GetPushRodArmEncoder() > pushRodArmMax)
+//    SetPushRodArmMotor(0.3);
+  if (GetPushRodArmEncoder() < pushRodArmMin)
+    SetPushRodArmMotor(-0.3);
+
+  
+  if (GetTurretAngle() < -turretLimit)
+    SetTurretMotor(-0.5);
+  if (GetTurretAngle() > turretLimit)
+    SetTurretMotor(0.5);
+  
+  
 }

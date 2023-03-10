@@ -51,11 +51,12 @@ void Robot::TeleopPeriodic() {
 
   // Arm Control
   m_arm.SetTurretMotor(m_opController.GetRawAxis(0));
-  m_arm.SetLowerArmMotor(m_opController.GetRawAxis(1));
-  m_arm.SetPushrodArmMotor(m_opController.GetRawAxis(3));
+  m_arm.SetLowerArmMotor(0.3 * m_opController.GetRawAxis(1));
+  m_arm.SetPushRodArmMotor(0.3 * m_opController.GetRawAxis(3));
 
+  // Intake is button 8??????
   if (m_opController.GetRawButton(7))
-    m_arm.SetIntakeMotor(1.0);
+    m_arm.SetIntakeMotor(0.3);
   else if (m_opController.GetRawButton(8))
     m_arm.SetIntakeMotor(-1.0);
   else

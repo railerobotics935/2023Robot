@@ -19,7 +19,7 @@ public:
   ArmFunctions();
   void UpdateNTE();
   void SetLowerArmMotor(double percent);
-  void SetPushrodArmMotor(double precent);
+  void SetPushRodArmMotor(double precent);
   void SetTurretMotor(double percent);
   void SetIntakeMotor(double precent);
   void SetWristServo(double angle);
@@ -29,27 +29,43 @@ public:
   double GetWristServoAngle();
   double GetLowerArmAngle();
   double GetTurretAngle();
+  void SafteyArmStop();
 
 private:
+  // Lengths of the parts of the arm in meters
+  double lengthOfLowerArm = 0.722;
+  double lengthOfPushRodArm = 0.787;
+  double lengthOfFullWrist = 28.15;
+
+  // 3D translation of the center of the turret, at the height of the lower arm pivot point.
+  double xTranslationOfArm = -0.089;
+  double yTranslationOfArm = -0.325;
+  double zTranslationOfArm = +0.287;
 
   double turretEncoderOffset = -0.972;
   double lowerArmEncoderOffset = 2.00 + (0.5 * std::numbers::pi); // measured at pi/2
-  double pushrodArmEcoderOffset = 1.694 + (0.5 * std::numbers::pi); // measured at pi/2
-  double wristServoOffset = 0.0;
+  double pushRodArmEcoderOffset = 1.694 + (0.5 * std::numbers::pi); // measured at pi/2
+  double wristServoOffset = 3.0;
+
+  // Arm Limits
+  double lowerArmMin = 0.13;
+  double lowerArmMax = (1.5 * std::numbers::pi/3);
+  double pushRodArmMin = (std::numbers::pi/2);
+  double pushRodArmMax = 3.13;
+  double turretLimit = (11 * std::numbers::pi / 180.0);
 
   // Arm Sensors
   frc::AnalogPotentiometer turretEncoder{4, (2.0 * std::numbers::pi), (-(std::numbers::pi + turretEncoderOffset))};
   frc::AnalogPotentiometer lowerArmEncoder{5, (2.0 * std::numbers::pi), (-(lowerArmEncoderOffset))};
-  frc::AnalogPotentiometer pushrodArmEncoder{6, (2.0 * std::numbers::pi), (-(pushrodArmEcoderOffset))};
+  frc::AnalogPotentiometer pushRodArmEncoder{6, (2.0 * std::numbers::pi), (-(pushRodArmEcoderOffset))};
   frc::Servo wristServo{0};
   frc::DigitalInput intakeSwitch{0};
 
   // Motor Controller
   rev::CANSparkMax lowerArmMotor{13, rev::CANSparkMax::MotorType::kBrushless};
-  rev::CANSparkMax pushrodArmMotor{17, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax pushRodArmMotor{17, rev::CANSparkMax::MotorType::kBrushless};
   VictorSPX turretMotor{14};
   VictorSPX intakeMotor{15};
-
 
   // Network Tables
   nt::NetworkTableEntry nte_turretAngle;
