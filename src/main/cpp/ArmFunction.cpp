@@ -91,7 +91,7 @@ void ArmFunctions::SetPushRodArmMotor(double precent)
 // Sets power to motor
 void ArmFunctions::SetIntakeMotor(double precent)
 {
-    intakeMotor.Set(motorcontrol::ControlMode::PercentOutput, precent);
+  intakeMotor.Set(motorcontrol::ControlMode::PercentOutput, precent);
 }
 
 // Sets wrist angle reletive to the push rod arm
@@ -100,6 +100,27 @@ void ArmFunctions::SetWristServo(double angle)
   wristServo.Set((angle + wristServoOffset)/(2*std::numbers::pi));
 }
 
+// Sets turret to a specified angle ONLY input inbetween +- 0.1919
+void ArmFunctions::SetTurretAngle(double angle)
+{
+  turretPID.SetSetpoint(angle);
+  turretOutput = turretPID.Calculate(GetTurretAngle());
+  turretMotor.Set(ControlMode::Current, turretOutput);
+}
+// Sets lower arm position
+void ArmFunctions::SetLowerArmAngle(double angle)
+{
+  lowerArmPID.SetSetpoint(angle);
+  lowerArmOutput = lowerArmPID.Calculate(GetLowerArmAngle());
+  lowerArmMotor.SetVoltage(units::volt_t{lowerArmOutput});
+}
+// Sets push rod arm position
+void ArmFunctions::SetPushRodArmAngle(double angle)
+{
+  pushRodArmPID.SetSetpoint(angle);
+  pushRodArmOutput = pushRodArmPID.Calculate(GetPushRodArmAngle());
+  pushRodArmMotor.SetVoltage(units::volt_t{pushRodArmOutput});
+}
 // Basic Saftey stop. If it goes further than specified limit, it sets power the other direction.
 void ArmFunctions::SafteyArmStop()
 {
@@ -119,6 +140,4 @@ void ArmFunctions::SafteyArmStop()
   //  SetTurretMotor(-0.5);
 //  if (GetTurretAngle() > turretLimit)
   //  SetTurretMotor(0.5);
-  
-  
 }

@@ -52,9 +52,6 @@ private:
   rev::SparkMaxRelativeEncoder m_driveEncoder;
   frc::AnalogInput m_turningEncoder;
 
-  //frc::sim::EncoderSim m_driveEncoderSim{m_driveEncoder};
-  //frc::sim::EncoderSim m_turingEncoderSim{m_turningEncoder};
-
   frc2::PIDController m_drivePIDController{1.0, 0.0, 0.0};
 
   frc::ProfiledPIDController<units::radians> m_turningPIDController{

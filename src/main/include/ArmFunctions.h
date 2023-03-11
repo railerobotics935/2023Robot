@@ -11,6 +11,7 @@
 #include <frc/DigitalInput.h>
 #include <frc/AnalogPotentiometer.h>
 #include <frc/Servo.h>
+#include <frc/controller/PIDController.h>
 #include "ctre/phoenix.h"
 
 class ArmFunctions
@@ -23,6 +24,9 @@ public:
   void SetTurretMotor(double percent);
   void SetIntakeMotor(double precent);
   void SetWristServo(double angle);
+  void SetTurretAngle(double angle);
+  void SetLowerArmAngle(double angle);
+  void SetPushRodArmAngle(double angle);
   double GetPushRodArmEncoder();
   double GetWristServoSensor();
   double GetPushRodArmAngle();
@@ -66,6 +70,15 @@ private:
   rev::CANSparkMax pushRodArmMotor{17, rev::CANSparkMax::MotorType::kBrushless};
   VictorSPX turretMotor{14};
   VictorSPX intakeMotor{15};
+
+  // PID controllers for the arm
+  frc2::PIDController turretPID{1.0, 0.0, 0.0};
+  frc2::PIDController lowerArmPID{1.0, 0.0, 0.0};
+  frc2::PIDController pushRodArmPID{1.0, 0.0, 0.0};
+
+  double turretOutput = 0.0;
+  double lowerArmOutput = 0.0;
+  double pushRodArmOutput = 0.0;
 
   // Network Tables
   nt::NetworkTableEntry nte_turretAngle;
