@@ -103,22 +103,22 @@ void ArmFunctions::SetWristServo(double angle)
 // Basic Saftey stop. If it goes further than specified limit, it sets power the other direction.
 void ArmFunctions::SafteyArmStop()
 {
-  if (GetLowerArmAngle() > lowerArmMax)
-    SetLowerArmMotor(0.3);
+  //if (GetLowerArmAngle() > lowerArmMax)
+  //  SetLowerArmMotor(0.3);
 //  if (GetLowerArmAngle() < lowerArmMin)
 //    SetLowerArmMotor(-0.3);
 
   // Remeber because the pushrod arm rotates the oposate direction, it looks inverted, but the angle reference is the same
 //  if (GetPushRodArmEncoder() > pushRodArmMax)
 //    SetPushRodArmMotor(0.3);
-  if (GetPushRodArmEncoder() < pushRodArmMin)
-    SetPushRodArmMotor(-0.3);
-
-  
-  if (GetTurretAngle() < -turretLimit)
-    SetTurretMotor(-0.5);
-  if (GetTurretAngle() > turretLimit)
-    SetTurretMotor(0.5);
+  //if (GetPushRodArmEncoder() < pushRodArmMin)
+  //  SetPushRodArmMotor(-0.3);
+//
+  //
+  //if (GetTurretAngle() < -turretLimit)
+  //  SetTurretMotor(-0.5);
+//  if (GetTurretAngle() > turretLimit)
+  //  SetTurretMotor(0.5);
   
   
 }

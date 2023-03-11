@@ -37,16 +37,18 @@ void Robot::TeleopPeriodic() {
 
   // Button Inputs
   // Red Button
-  if (m_driveController.GetRawButtonPressed(3))
-    fieldRelative = !fieldRelative;
+  if (m_driveController.GetRawButton(1))
+    fieldRelative = false;
+  else
+    fieldRelative = true;
   
   // Red Button
-  if (m_driveController.GetRawButton(1))
+  if (m_driveController.GetRawButton(2))
     isParked = true;
   else
     isParked = false;
   
-  if (m_driveController.GetRawButtonPressed(4))
+  if (m_driveController.GetRawButtonPressed(3))
     m_swerve.ResetGyro();
 
   // Arm Control
@@ -56,7 +58,7 @@ void Robot::TeleopPeriodic() {
 
   // Intake is button 8??????
   if (m_opController.GetRawButton(7))
-    m_arm.SetIntakeMotor(0.3);
+    m_arm.SetIntakeMotor(1.0);
   else if (m_opController.GetRawButton(8))
     m_arm.SetIntakeMotor(-1.0);
   else
@@ -130,29 +132,29 @@ void Robot::DriveWithJoystick(bool fieldRelative) {
     }
     */
     // Exponetal adjustment for the controller
-    driveJoystickAdjustedInputX = ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.05)) * (1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.05)));
-    driveJoystickAdjustedInputY = ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)) * (1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)));
-
-    if ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.05)) < 0)
-      driveJoystickAdjustedInputX = -driveJoystickAdjustedInputX;
-
-    if ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)) < 0)
-      driveJoystickAdjustedInputY = -driveJoystickAdjustedInputY;
+  //  driveJoystickAdjustedInputX = ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)) * (1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)));
+  //  driveJoystickAdjustedInputY = ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.05)) * (1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.05)));
+//
+  //  if ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.05)) < 0)
+  //    driveJoystickAdjustedInputX = -driveJoystickAdjustedInputX;
+//
+  //  if ((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.05)) < 0)
+  //    driveJoystickAdjustedInputY = -driveJoystickAdjustedInputY;
 
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    const auto xSpeed = -m_xspeedLimiter.Calculate(driveJoystickAdjustedInputX) * Drivetrain::kMaxSpeed;    
+    const auto xSpeed = -m_xspeedLimiter.Calculate((1.66667 * frc::ApplyDeadband(m_driveController.GetRawAxis(2), 0.12))) * Drivetrain::kMaxSpeed;    
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    const auto ySpeed = m_yspeedLimiter.Calculate(driveJoystickAdjustedInputY) * Drivetrain::kMaxSpeed;
+    const auto ySpeed = -m_yspeedLimiter.Calculate((1.66667 * frc::ApplyDeadband(m_driveController.GetRawAxis(4), 0.07))) * Drivetrain::kMaxSpeed;
 
     // Get the rate of angular rotation. We are inverting this because we want a
     // positive value when we pull to the left (remember, CCW introllers return posits positive in
     // mathematics). Xbox coive values when you pull to
     // the right by default.
-    const auto rot = -m_rotLimiter.Calculate((1.25 *frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.05))) * Drivetrain::kMaxAngularSpeed;
+    const auto rot = -m_rotLimiter.Calculate((1.25 *frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.07))) * Drivetrain::kMaxAngularSpeed;
 
     m_swerve.Drive(xSpeed, ySpeed, rot, fieldRelative);
   }
