@@ -49,8 +49,10 @@ private:
   double ANALOG_TO_RAD_FACTOR = 1.2566;     // 0 to 5.0 volt = 2PI rad
 
   frc::XboxController m_driveController{0}; // one of the rc controllers
-  frc::GenericHID m_armController{2};
   frc::XboxController m_opController{1};
+
+  bool setpointControler = true;
+  bool controllerStartedNeutral = false;
 
   // Servedrive and arm objects
   Drivetrain m_swerve;
@@ -59,6 +61,21 @@ private:
   // Drive variables
   double driveJoystickAdjustedInputX = 0.0;
   double driveJoystickAdjustedInputY = 0.0;
+
+  // Both arm inputs become negative as you push them forward
+  double lowerArmSetpointAngle;
+  double pushRodArmSetpointAngle;
+  double workingLowerArmRange = (2 * std::numbers::pi) / 3;
+  double workingPushRodArmRange = (2 * std::numbers::pi) / 3;
+  double workingWristRange = std::numbers::pi;
+  double lowerArmInputRange = -1.21;
+  double pushRodArmInputRange = -1.23;
+
+  // Oporator joystick trim adjustment
+  double turretTrim = 0.14;
+  double lowerArmTrim = -0.81;
+  double pushRodArmTrim = -0.81;
+  double wristTrim = 0.13;
 
   double wristSetAngle = 0.0;
 
@@ -72,6 +89,10 @@ private:
 
   bool fieldRelative = true;
   bool isParked = false;
+
+  // NetowrkTable Entries
+  nt::NetworkTableEntry nte_lowerArmSetpointAngle;
+  nt::NetworkTableEntry nte_pushRodArmSetpointAngle;
 
   void DriveWithJoystick(bool fieldRelative);
 

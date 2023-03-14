@@ -26,14 +26,14 @@ public:
   void SetWristServo(double angle);
   void SetTurretAngle(double angle);
   void SetLowerArmAngle(double angle);
-  void SetPushRodArmAngle(double angle);
+  void SetPushRodArmAdjustedAngle(double angle);
+  void SetPushRodArmRawAngle(double angle);
   double GetPushRodArmEncoder();
   double GetWristServoSensor();
   double GetPushRodArmAngle();
   double GetWristServoAngle();
   double GetLowerArmAngle();
   double GetTurretAngle();
-  void SafteyArmStop();
 
 private:
   // Lengths of the parts of the arm in meters
@@ -51,12 +51,14 @@ private:
   double pushRodArmEcoderOffset = 1.694 + (0.5 * std::numbers::pi); // measured at pi/2
   double wristServoOffset = 3.0;
 
-  // Arm Limits
-  double lowerArmMin = 0.13;
-  double lowerArmMax = (1.5 * std::numbers::pi/3);
-  double pushRodArmMin = (std::numbers::pi/2);
-  double pushRodArmMax = 3.13;
+  // Arm Limits. the push rod arm is using the raw angle
+  double lowerArmLimit = (2 * std::numbers::pi) / 3;
+  double pushRodArmLimit = (std::numbers::pi) / 3;
   double turretLimit = (11 * std::numbers::pi / 180.0);
+  double idleLowerArmThreshold = 0.119;
+  double idlePushRodArmThreshold = 3.0415;
+  bool lowerArmIdleMode = true;
+  bool pushRodArmIdleMode = true;
 
   // Arm Sensors
   frc::AnalogPotentiometer turretEncoder{4, (2.0 * std::numbers::pi), (-(std::numbers::pi + turretEncoderOffset))};
@@ -73,8 +75,8 @@ private:
 
   // PID controllers for the arm
   frc2::PIDController turretPID{1.0, 0.0, 0.0};
-  frc2::PIDController lowerArmPID{1.0, 0.0, 0.0};
-  frc2::PIDController pushRodArmPID{1.0, 0.0, 0.0};
+  frc2::PIDController lowerArmPID{7.0, 0.0, 0.0};
+  frc2::PIDController pushRodArmPID{10.0, 0.0, 0.0};
 
   double turretOutput = 0.0;
   double lowerArmOutput = 0.0;

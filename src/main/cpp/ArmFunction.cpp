@@ -71,21 +71,34 @@ double ArmFunctions::GetTurretAngle()
 // Postive values rotates ccw
 void ArmFunctions::SetTurretMotor(double percent)
 {
-  turretMotor.Set(motorcontrol::ControlMode::PercentOutput, percent);
+  if (GetTurretAngle() > turretLimit)
+  {
+    if (percent > 0.0)
+      turretMotor.Set(motorcontrol::ControlMode::PercentOutput, percent);
+    else
+      SetTurretAngle(turretLimit);
+  }
+  else if (GetTurretAngle() < -turretLimit)
+  {
+    if (percent < 0.0)
+      turretMotor.Set(motorcontrol::ControlMode::PercentOutput, percent);
+    else
+      SetTurretAngle(-turretLimit);
+  }
+  else
+    turretMotor.Set(motorcontrol::ControlMode::PercentOutput, percent);
 }
 
 // Positive values rotates the arm ccw
 void ArmFunctions::SetLowerArmMotor(double precent)
 {
   lowerArmMotor.Set(precent);
-  SafteyArmStop();
 }
 
 // Positive values rotates the arm cw
 void ArmFunctions::SetPushRodArmMotor(double precent)
 {
   pushRodArmMotor.Set(precent);
-  SafteyArmStop();
 }
 
 // Sets power to motor
@@ -97,47 +110,113 @@ void ArmFunctions::SetIntakeMotor(double precent)
 // Sets wrist angle reletive to the push rod arm
 void ArmFunctions::SetWristServo(double angle)
 {
-  wristServo.Set((angle + wristServoOffset)/(2*std::numbers::pi));
+  wristServo.Set(((angle + wristServoOffset) * 180)/(std::numbers::pi));
 }
 
 // Sets turret to a specified angle ONLY input inbetween +- 0.1919
 void ArmFunctions::SetTurretAngle(double angle)
 {
-  turretPID.SetSetpoint(angle);
+  if (GetTurretAngle() > turretLimit)
+  {
+    if (angle < turretLimit)
+      turretPID.SetSetpoint(angle);
+    else
+      turretPID.SetSetpoint(turretLimit);
+  }
+  else if (GetTurretAngle() < -turretLimit)
+  {
+    if (angle > -turretLimit)
+      turretPID.SetSetpoint(angle);
+    else
+      turretPID.SetSetpoint(-turretLimit);
+  }
+  else
+    turretPID.SetSetpoint(angle);
+  
   turretOutput = turretPID.Calculate(GetTurretAngle());
   turretMotor.Set(ControlMode::Current, turretOutput);
 }
+
 // Sets lower arm position
 void ArmFunctions::SetLowerArmAngle(double angle)
 {
-  lowerArmPID.SetSetpoint(angle);
-  lowerArmOutput = lowerArmPID.Calculate(GetLowerArmAngle());
-  lowerArmMotor.SetVoltage(units::volt_t{lowerArmOutput});
+  // Double check the angle is ok
+  if (GetLowerArmAngle() > lowerArmLimit)
+  {
+    if (angle < lowerArmLimit)
+      lowerArmPID.SetSetpoint(angle);
+    else
+      lowerArmPID.SetSetpoint(lowerArmLimit);
+  }
+  else if (angle < idleLowerArmThreshold)
+  {
+    if (GetLowerArmAngle() < idleLowerArmThreshold + 0.2)
+      lowerArmIdleMode = true;
+    else
+    {
+      lowerArmPID.SetSetpoint(idleLowerArmThreshold);
+      lowerArmIdleMode = false;
+    }
+  }
+  else
+  {
+    lowerArmPID.SetSetpoint(angle);
+    lowerArmIdleMode = false;
+  }
+
+  // If the idle mode is active, set the power to zero
+  if (lowerArmIdleMode)
+    lowerArmMotor.SetVoltage(units::volt_t{0.0});
+  {
+    lowerArmPID.SetSetpoint(angle);
+    lowerArmOutput = lowerArmPID.Calculate(GetLowerArmAngle());
+    lowerArmMotor.SetVoltage(units::volt_t{lowerArmOutput});
+  }
 }
+
 // Sets push rod arm position
-void ArmFunctions::SetPushRodArmAngle(double angle)
+void ArmFunctions::SetPushRodArmRawAngle(double angle)
+{
+  // Double check the angle is ok
+  if (GetPushRodArmEncoder() < pushRodArmLimit)
+  {
+    if (angle > pushRodArmLimit)
+      pushRodArmPID.SetSetpoint(angle);
+    else
+      pushRodArmPID.SetSetpoint(pushRodArmLimit);
+  }
+  else if (angle > idlePushRodArmThreshold)
+  {
+    if (GetPushRodArmEncoder() > idlePushRodArmThreshold - 0.2)
+      pushRodArmIdleMode = true;
+    else
+    {
+      pushRodArmPID.SetSetpoint(idlePushRodArmThreshold);
+      pushRodArmIdleMode = false;
+    }
+  }
+  else
+  {
+    pushRodArmPID.SetSetpoint(angle);
+    pushRodArmIdleMode = false;
+  }
+
+  // If the idle mode is active, set the power to zero
+  if (pushRodArmIdleMode)
+    pushRodArmMotor.SetVoltage(units::volt_t{0.0});
+  {
+    pushRodArmPID.SetSetpoint(angle);
+    pushRodArmOutput = pushRodArmPID.Calculate(GetLowerArmAngle());
+    pushRodArmMotor.SetVoltage(units::volt_t{pushRodArmOutput});
+  }
+}
+
+/*
+// Sets push rod arm position
+void ArmFunctions::SetPushRodArmAdjustedAngle(double angle)
 {
   pushRodArmPID.SetSetpoint(angle);
   pushRodArmOutput = pushRodArmPID.Calculate(GetPushRodArmAngle());
   pushRodArmMotor.SetVoltage(units::volt_t{pushRodArmOutput});
 }
-// Basic Saftey stop. If it goes further than specified limit, it sets power the other direction.
-void ArmFunctions::SafteyArmStop()
-{
-  //if (GetLowerArmAngle() > lowerArmMax)
-  //  SetLowerArmMotor(0.3);
-//  if (GetLowerArmAngle() < lowerArmMin)
-//    SetLowerArmMotor(-0.3);
-
-  // Remeber because the pushrod arm rotates the oposate direction, it looks inverted, but the angle reference is the same
-//  if (GetPushRodArmEncoder() > pushRodArmMax)
-//    SetPushRodArmMotor(0.3);
-  //if (GetPushRodArmEncoder() < pushRodArmMin)
-  //  SetPushRodArmMotor(-0.3);
-//
-  //
-  //if (GetTurretAngle() < -turretLimit)
-  //  SetTurretMotor(-0.5);
-//  if (GetTurretAngle() > turretLimit)
-  //  SetTurretMotor(0.5);
-}
+*/
