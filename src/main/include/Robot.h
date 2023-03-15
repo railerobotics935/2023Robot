@@ -52,6 +52,7 @@ private:
   frc::XboxController m_opController{1};
 
   bool setpointControler = true;
+  bool customArmController = false;
   bool controllerStartedNeutral = false;
 
   // Servedrive and arm objects
@@ -65,17 +66,29 @@ private:
   // Both arm inputs become negative as you push them forward
   double lowerArmSetpointAngle;
   double pushRodArmSetpointAngle;
-  double workingLowerArmRange = (2 * std::numbers::pi) / 3;
-  double workingPushRodArmRange = (2 * std::numbers::pi) / 3;
-  double workingWristRange = std::numbers::pi;
   double lowerArmInputRange = -1.21;
   double pushRodArmInputRange = -1.23;
+
+  // Range set to the controller also check the arm funcitons limit
+  double workingLowerArmRange = 2.0;
+  double workingPushRodArmRange = 1.855;
+  double workingWristRange = std::numbers::pi;
 
   // Oporator joystick trim adjustment
   double turretTrim = 0.14;
   double lowerArmTrim = -0.81;
   double pushRodArmTrim = -0.81;
   double wristTrim = 0.13;
+
+  // Oporator joystick trim adjustment for the custom arm controller
+  double lowerArmTrim2 = 0.0;
+  double pushRodArmTrim2 = 0.0;
+  double wristTrim2 = 0.40;
+
+  double lowerArmInputRange2 = -0.35;
+  double pushRodArmInputRange2 = -0.29;
+  double wristInputRange2 = -0.50;
+
 
   double wristSetAngle = 0.0;
 
@@ -93,6 +106,7 @@ private:
   // NetowrkTable Entries
   nt::NetworkTableEntry nte_lowerArmSetpointAngle;
   nt::NetworkTableEntry nte_pushRodArmSetpointAngle;
+  nt::NetworkTableEntry nte_wirstSetpointAngle;
 
   void DriveWithJoystick(bool fieldRelative);
 

@@ -12,8 +12,8 @@ ArmFunctions::ArmFunctions()
   nte_pushRodArmAngle = nt_table->GetEntry("Arm/Push Rod Arm Angle");
   nte_wristServoAngle = nt_table->GetEntry("Arm/Wrist Angle");
 
-  lowerArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
-  pushRodArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  lowerArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
+  pushRodArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
   intakeMotor.SetNeutralMode(NeutralMode::Brake);
 }
 
@@ -25,7 +25,7 @@ void ArmFunctions::UpdateNTE()
   nte_lowerArmAngle.SetDouble(GetLowerArmAngle());
   nte_pushRodArmEncoder.SetDouble(GetPushRodArmEncoder());
   nte_pushRodArmAngle.SetDouble(GetPushRodArmAngle());
-  nte_wristServoAngle.SetDouble(GetWristServoAngle());
+  nte_wristServoAngle.SetDouble(GetWristServoSensor());
 }
 
 // Angle values in radians. All Angles are in standard positon. Looking at the left side of the robot, ccw is increasing, horizontal, inital side from left to right
@@ -47,7 +47,7 @@ double ArmFunctions::GetPushRodArmEncoder()
 // Returns the setpoint, in radians, of the wrist servo, reletive to the push rod arm
 double ArmFunctions::GetWristServoSensor()
 {
-  return (wristServo.Get() * 2 * std::numbers::pi + wristServoOffset);
+  return (wristServo.Get() - wristServoOffset);
 }
 
 // Returns the angle, in radians, of the wrist reletive to the robot
@@ -110,7 +110,7 @@ void ArmFunctions::SetIntakeMotor(double precent)
 // Sets wrist angle reletive to the push rod arm
 void ArmFunctions::SetWristServo(double angle)
 {
-  wristServo.Set(((angle + wristServoOffset) * 180)/(std::numbers::pi));
+  wristServo.Set(wristServoOffset + (angle/(std::numbers::pi*3)));
 }
 
 // Sets turret to a specified angle ONLY input inbetween +- 0.1919
@@ -150,7 +150,7 @@ void ArmFunctions::SetLowerArmAngle(double angle)
   }
   else if (angle < idleLowerArmThreshold)
   {
-    if (GetLowerArmAngle() < idleLowerArmThreshold + 0.2)
+    if (GetLowerArmAngle() < idleLowerArmThreshold + 0.05)
       lowerArmIdleMode = true;
     else
     {
@@ -167,8 +167,8 @@ void ArmFunctions::SetLowerArmAngle(double angle)
   // If the idle mode is active, set the power to zero
   if (lowerArmIdleMode)
     lowerArmMotor.SetVoltage(units::volt_t{0.0});
+  else
   {
-    lowerArmPID.SetSetpoint(angle);
     lowerArmOutput = lowerArmPID.Calculate(GetLowerArmAngle());
     lowerArmMotor.SetVoltage(units::volt_t{lowerArmOutput});
   }
@@ -180,14 +180,22 @@ void ArmFunctions::SetPushRodArmRawAngle(double angle)
   // Double check the angle is ok
   if (GetPushRodArmEncoder() < pushRodArmLimit)
   {
-    if (angle > pushRodArmLimit)
+    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/6)))
+    {
+      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 5/6)));
+      std::cout << "1\r\n";
+    }
+    else if (angle > pushRodArmLimit)
       pushRodArmPID.SetSetpoint(angle);
     else
+    {
       pushRodArmPID.SetSetpoint(pushRodArmLimit);
+      std::cout << "4\r\n";
+    }
   }
   else if (angle > idlePushRodArmThreshold)
   {
-    if (GetPushRodArmEncoder() > idlePushRodArmThreshold - 0.2)
+    if (GetPushRodArmEncoder() > idlePushRodArmThreshold - 0.05)
       pushRodArmIdleMode = true;
     else
     {
@@ -197,16 +205,23 @@ void ArmFunctions::SetPushRodArmRawAngle(double angle)
   }
   else
   {
-    pushRodArmPID.SetSetpoint(angle);
+    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/6)))
+    {
+      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 5/6)));
+      std::cout << "3\r\n";
+    }
+    else
+      pushRodArmPID.SetSetpoint(angle);
+      
     pushRodArmIdleMode = false;
   }
 
   // If the idle mode is active, set the power to zero
   if (pushRodArmIdleMode)
     pushRodArmMotor.SetVoltage(units::volt_t{0.0});
+  else
   {
-    pushRodArmPID.SetSetpoint(angle);
-    pushRodArmOutput = pushRodArmPID.Calculate(GetLowerArmAngle());
+    pushRodArmOutput = -pushRodArmPID.Calculate(GetPushRodArmEncoder());
     pushRodArmMotor.SetVoltage(units::volt_t{pushRodArmOutput});
   }
 }

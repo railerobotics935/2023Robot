@@ -20,6 +20,7 @@ void Robot::RobotInit() {
   auto nt_table = nt_inst.GetTable("datatable");
   nte_lowerArmSetpointAngle = nt_table->GetEntry("Arm/Lower Arm Setpoint Angle");
   nte_pushRodArmSetpointAngle = nt_table->GetEntry("Arm/Push Rod Arm Setpoint Angle");
+  nte_wirstSetpointAngle = nt_table->GetEntry("Arm/Wrist Setpoint Angle");
 }
 void Robot::RobotPeriodic() {
   m_arm.UpdateNTE();
@@ -29,10 +30,20 @@ void Robot::AutonomousInit() {}
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
-  if (abs(m_opController.GetRawAxis(2) + lowerArmTrim) < 0.05 && abs(m_opController.GetRawAxis(1) + pushRodArmTrim) < 0.05)
-    controllerStartedNeutral = true;
+  if (customArmController)
+  {
+    if (m_opController.GetRawAxis(1) + lowerArmTrim2 > -0.02 && m_opController.GetRawAxis(0) + pushRodArmTrim2 > -0.02)
+      controllerStartedNeutral = true;
+    else
+      controllerStartedNeutral = false;
+  }
   else
-    controllerStartedNeutral = false;
+  {
+    if (m_opController.GetRawAxis(2) + lowerArmTrim > -0.05 && m_opController.GetRawAxis(1) + pushRodArmTrim > -0.05)
+      controllerStartedNeutral = true;
+    else
+      controllerStartedNeutral = false;
+  }
 }
 void Robot::TeleopPeriodic() {
   
@@ -64,47 +75,102 @@ void Robot::TeleopPeriodic() {
   // Deafult is to run on setpoint control
   if (setpointControler)
   {
-    // Turret Control
-    m_arm.SetTurretMotor(m_opController.GetRawAxis(4));
-
-    if (controllerStartedNeutral)
+    if (customArmController)
     {
-      // Joystick to angle conversion axis 2 is lower arm. axis one is push rod arm
-      lowerArmSetpointAngle =  ((m_opController.GetRawAxis(2) + lowerArmTrim) / lowerArmInputRange) * workingLowerArmRange;
-      pushRodArmSetpointAngle = -((((m_opController.GetRawAxis(1) + pushRodArmTrim) / pushRodArmInputRange) * workingPushRodArmRange) - std::numbers::pi);
-      m_arm.SetLowerArmAngle(lowerArmSetpointAngle);
-      m_arm.SetPushRodArmRawAngle(pushRodArmSetpointAngle);
-      nte_lowerArmSetpointAngle.SetDouble(lowerArmSetpointAngle);
-      nte_pushRodArmSetpointAngle.SetDouble(pushRodArmSetpointAngle);
+      // Turret Control
+      //m_arm.SetTurretMotor(m_opController.GetRawAxis(4));
+
+      if (controllerStartedNeutral)
+      {
+        // Joystick to angle conversion axis 2 is lower arm. axis one is push rod arm
+        lowerArmSetpointAngle =  ((m_opController.GetRawAxis(1) + lowerArmTrim2) / lowerArmInputRange2) * workingLowerArmRange;
+        pushRodArmSetpointAngle = -((((m_opController.GetRawAxis(0) + pushRodArmTrim2) / pushRodArmInputRange2) * workingPushRodArmRange) - std::numbers::pi);
+        m_arm.SetLowerArmAngle(lowerArmSetpointAngle);
+        m_arm.SetPushRodArmRawAngle(pushRodArmSetpointAngle);
+        nte_lowerArmSetpointAngle.SetDouble(lowerArmSetpointAngle);
+        nte_pushRodArmSetpointAngle.SetDouble(pushRodArmSetpointAngle);
+      }
+      else
+      {
+        m_arm.SetLowerArmAngle(0.0);
+        m_arm.SetPushRodArmRawAngle(3.1);
+        if (m_opController.GetRawAxis(1) + lowerArmTrim2 > -0.02 && m_opController.GetRawAxis(0) + pushRodArmTrim2 > -0.02)
+          controllerStartedNeutral = true;
+        std::cout << "Set Joystick to Zero!\r\n";
+      }
+      
+      // Turret Control
+      wristSetAngle = ((frc::ApplyDeadband(m_opController.GetRawAxis(3) + wristTrim2, 0.3)/wristInputRange2) * workingWristRange) - 0.6;
+      if (wristSetAngle > std::numbers::pi/2)
+        wristSetAngle = std::numbers::pi/2;
+      if (wristSetAngle < -std::numbers::pi/4)
+        wristSetAngle = -std::numbers::pi/4;
+      m_arm.SetWristServo(-wristSetAngle);
+      nte_wirstSetpointAngle.SetDouble(wristSetAngle);
+
+      // Intake controll, Red button is one
+      if (m_opController.GetRawButton(9))
+      {
+        m_arm.SetIntakeMotor(1.0);
+        std::cout << "1\r\n";
+      }
+      else if (m_opController.GetRawButton(10))
+        m_arm.SetIntakeMotor(-1.0);
+      else
+        m_arm.SetIntakeMotor(0.0);
     }
     else
     {
-      m_arm.SetLowerArmAngle(0.0);
-      m_arm.SetPushRodArmRawAngle(3.1);
-      if (abs(m_opController.GetRawAxis(2) + lowerArmTrim) < 0.05 && abs(m_opController.GetRawAxis(1) + pushRodArmTrim) < 0.05)
-        controllerStartedNeutral = true;
-      std::cout << "Set Joystick to Zero!\r\n";
+
+
+      m_arm.SetTurretMotor(m_opController.GetRawAxis(4));
+
+      if (controllerStartedNeutral)
+      {
+        // Joystick to angle conversion axis 2 is lower arm. axis one is push rod arm
+        lowerArmSetpointAngle =  ((m_opController.GetRawAxis(2) + lowerArmTrim) / lowerArmInputRange) * workingLowerArmRange;
+        pushRodArmSetpointAngle = -((((m_opController.GetRawAxis(1) + pushRodArmTrim) / pushRodArmInputRange) * workingPushRodArmRange) - std::numbers::pi);
+        m_arm.SetLowerArmAngle(lowerArmSetpointAngle);
+        m_arm.SetPushRodArmRawAngle(pushRodArmSetpointAngle);
+        nte_lowerArmSetpointAngle.SetDouble(lowerArmSetpointAngle);
+        nte_pushRodArmSetpointAngle.SetDouble(pushRodArmSetpointAngle);
+      }
+      else
+      {
+        m_arm.SetLowerArmAngle(0.0);
+        m_arm.SetPushRodArmRawAngle(3.1);
+        if (m_opController.GetRawAxis(2) + lowerArmTrim > -0.05 && m_opController.GetRawAxis(1) + pushRodArmTrim > -0.05)
+          controllerStartedNeutral = true;
+        std::cout << "Set Joystick to Zero!\r\n";
+      }
+      
+      // Wrist input
+      wristSetAngle = wristSetAngle + (frc::ApplyDeadband(m_opController.GetRawAxis(0) + wristTrim, 0.1) * 0.02);
+      if (wristSetAngle > std::numbers::pi/3)
+        wristSetAngle = std::numbers::pi/3;
+      if (wristSetAngle < -std::numbers::pi/2)
+        wristSetAngle = -std::numbers::pi/2;
+      m_arm.SetWristServo(wristSetAngle);
+      nte_wirstSetpointAngle.SetDouble(wristSetAngle);
+
+      // Intake controll, Red button is one
+      if (m_opController.GetRawButton(1))
+      {
+        m_arm.SetIntakeMotor(1.0);
+        std::cout << "1\r\n";
+      }
+      else if (m_opController.GetRawButton(4))
+        m_arm.SetIntakeMotor(-1.0);
+      else
+        m_arm.SetIntakeMotor(0.0);
     }
-    
-    // Wrist input
-    wristSetAngle = wristSetAngle + ((m_opController.GetRawAxis(0) + wristTrim) * 0.8);
-    m_arm.SetWristServo(wristSetAngle);
-
-    // Intake controll, Red button is one
-    if (m_opController.GetRawButton(1))
-      m_arm.SetIntakeMotor(1.0);
-    else if (m_opController.GetRawButton(4))
-      m_arm.SetIntakeMotor(-1.0);
-    else
-      m_arm.SetIntakeMotor(0.0);
-
   }
   else
   {
   // Arm Control
   m_arm.SetTurretMotor(m_opController.GetRawAxis(0));
   m_arm.SetLowerArmMotor(0.3 * m_opController.GetRawAxis(1));
-  m_arm.SetPushRodArmMotor(0.3 * m_opController.GetRawAxis(3));
+  //m_arm.SetPushRodArmMotor(0.3 * m_opController.GetRawAxis(3));
 
   // Intake is button 8??????
   if (m_opController.GetRawButton(7))

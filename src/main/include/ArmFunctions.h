@@ -39,22 +39,23 @@ private:
   // Lengths of the parts of the arm in meters
   double lengthOfLowerArm = 0.722;
   double lengthOfPushRodArm = 0.787;
-  double lengthOfFullWrist = 28.15;
+  double lengthOfFullWrist = 0.02815;
 
   // 3D translation of the center of the turret, at the height of the lower arm pivot point.
   double xTranslationOfArm = -0.089;
   double yTranslationOfArm = -0.325;
   double zTranslationOfArm = +0.287;
 
+  // measured offsets DON'T TOUCH
   double turretEncoderOffset = -0.972;
   double lowerArmEncoderOffset = 2.00 + (0.5 * std::numbers::pi); // measured at pi/2
   double pushRodArmEcoderOffset = 1.694 + (0.5 * std::numbers::pi); // measured at pi/2
-  double wristServoOffset = 3.0;
+  double wristServoOffset = 0.5;
 
   // Arm Limits. the push rod arm is using the raw angle
-  double lowerArmLimit = (2 * std::numbers::pi) / 3;
-  double pushRodArmLimit = (std::numbers::pi) / 3;
-  double turretLimit = (11 * std::numbers::pi / 180.0);
+  double lowerArmLimit = 1.755;
+  double pushRodArmLimit = 1.0;
+  double turretLimit = (4 * std::numbers::pi / 180.0);
   double idleLowerArmThreshold = 0.119;
   double idlePushRodArmThreshold = 3.0415;
   bool lowerArmIdleMode = true;
@@ -75,8 +76,8 @@ private:
 
   // PID controllers for the arm
   frc2::PIDController turretPID{1.0, 0.0, 0.0};
-  frc2::PIDController lowerArmPID{7.0, 0.0, 0.0};
-  frc2::PIDController pushRodArmPID{10.0, 0.0, 0.0};
+  frc2::PIDController lowerArmPID{10.0, 5.0, 1.0};
+  frc2::PIDController pushRodArmPID{10.0, 3.0, 0.2};
 
   double turretOutput = 0.0;
   double lowerArmOutput = 0.0;
