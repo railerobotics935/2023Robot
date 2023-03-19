@@ -55,6 +55,10 @@ void Drivetrain::ResetGyro()
   m_gyro.Reset();
 }
 
+void Drivetrain::GetGyroAngle()
+{
+
+}
 
 void Drivetrain::Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
                        units::radians_per_second_t rot, bool fieldRelative)

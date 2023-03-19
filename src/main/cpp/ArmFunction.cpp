@@ -14,7 +14,7 @@ ArmFunctions::ArmFunctions()
 
   lowerArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
   pushRodArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
-  intakeMotor.SetNeutralMode(NeutralMode::Brake);
+  intakeMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 }
 
 // Updates Netowrk table entries, needs to be called every cycle for acurrate values
@@ -74,19 +74,19 @@ void ArmFunctions::SetTurretMotor(double percent)
   if (GetTurretAngle() > turretLimit)
   {
     if (percent > 0.0)
-      turretMotor.Set(motorcontrol::ControlMode::PercentOutput, percent);
+      turretMotor.Set(percent);
     else
       SetTurretAngle(turretLimit);
   }
   else if (GetTurretAngle() < -turretLimit)
   {
     if (percent < 0.0)
-      turretMotor.Set(motorcontrol::ControlMode::PercentOutput, percent);
+      turretMotor.Set(percent);
     else
       SetTurretAngle(-turretLimit);
   }
   else
-    turretMotor.Set(motorcontrol::ControlMode::PercentOutput, percent);
+    turretMotor.Set(percent);
 }
 
 // Positive values rotates the arm ccw
@@ -104,7 +104,8 @@ void ArmFunctions::SetPushRodArmMotor(double precent)
 // Sets power to motor
 void ArmFunctions::SetIntakeMotor(double precent)
 {
-  intakeMotor.Set(motorcontrol::ControlMode::PercentOutput, precent);
+  std::cout << "Setting intake Output\r\n";
+  intakeMotor.Set(precent);
 }
 
 // Sets wrist angle reletive to the push rod arm
@@ -132,9 +133,9 @@ void ArmFunctions::SetTurretAngle(double angle)
   }
   else
     turretPID.SetSetpoint(angle);
-  
+  std::cout << "Setting Turret Output\r\n";
   turretOutput = turretPID.Calculate(GetTurretAngle());
-  turretMotor.Set(ControlMode::Current, turretOutput);
+  turretMotor.Set(turretOutput);
 }
 
 // Sets lower arm position
@@ -180,9 +181,9 @@ void ArmFunctions::SetPushRodArmRawAngle(double angle)
   // Double check the angle is ok
   if (GetPushRodArmEncoder() < pushRodArmLimit)
   {
-    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/6)))
+    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/3)))
     {
-      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 5/6)));
+      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 2/3)));
       std::cout << "1\r\n";
     }
     else if (angle > pushRodArmLimit)
@@ -205,9 +206,9 @@ void ArmFunctions::SetPushRodArmRawAngle(double angle)
   }
   else
   {
-    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/6)))
+    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/4)))
     {
-      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 5/6)));
+      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 3/4)));
       std::cout << "3\r\n";
     }
     else

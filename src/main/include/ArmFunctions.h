@@ -66,18 +66,17 @@ private:
   frc::AnalogPotentiometer lowerArmEncoder{5, (2.0 * std::numbers::pi), (-(lowerArmEncoderOffset))};
   frc::AnalogPotentiometer pushRodArmEncoder{6, (2.0 * std::numbers::pi), (-(pushRodArmEcoderOffset))};
   frc::Servo wristServo{0};
-  frc::DigitalInput intakeSwitch{0};
 
   // Motor Controller
   rev::CANSparkMax lowerArmMotor{13, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax pushRodArmMotor{17, rev::CANSparkMax::MotorType::kBrushless};
-  VictorSPX turretMotor{14};
-  VictorSPX intakeMotor{15};
+  rev::CANSparkMax turretMotor{14, rev::CANSparkMax::MotorType::kBrushed};
+  rev::CANSparkMax intakeMotor{15, rev::CANSparkMax::MotorType::kBrushed};
 
   // PID controllers for the arm
-  frc2::PIDController turretPID{1.0, 0.0, 0.0};
+  frc2::PIDController turretPID{15.0, 0.0, 0.0};
   frc2::PIDController lowerArmPID{10.0, 5.0, 1.0};
-  frc2::PIDController pushRodArmPID{10.0, 3.0, 0.2};
+  frc2::PIDController pushRodArmPID{15.0, 3.0, 0.2};
 
   double turretOutput = 0.0;
   double lowerArmOutput = 0.0;
