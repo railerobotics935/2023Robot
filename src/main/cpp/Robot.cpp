@@ -29,21 +29,8 @@ void Robot::RobotPeriodic() {
 void Robot::AutonomousInit() 
 {
   // Grab driverstation station number from DriverStation
-  if (frc::DriverStation::GetLocation() == 1)
-  {
-    currentDriverStation = DriverStation::kStation1;
-    currentAutoState = AutoState::kScoreCube;
-  }
-  if (frc::DriverStation::GetLocation() == 2)
-  {
-    currentDriverStation = DriverStation::kStation2;
-    currentAutoState = AutoState::kScoreCube;
-  }
-  if (frc::DriverStation::GetLocation() == 3)
-  {
-    currentDriverStation = DriverStation::kStation3;
-    currentAutoState = AutoState::kScoreCube;
-  }
+  currentDriverStation = DriverStation::kStation1;
+
   initialPose2d = m_swerve.GetPose();
   autoTimer.Reset();
   autoTimer.Start();
@@ -55,7 +42,7 @@ void Robot::AutonomousPeriodic()
   {
   case kMobility:
     std::cout << "Mobility\r\n";
-    if (initialPose2d.X() < (units::length::meter_t)3.0  && autoTimer.Get() < (units::time::second_t) 2.0)
+    if (initialPose2d.X() < (units::length::meter_t)3.0  && autoTimer.Get() < (units::time::second_t)2.0)
     {
       // add something to to check if you set a game peice or not.
       m_swerve.Drive((units::velocity::meters_per_second_t) -4.0, 
@@ -130,7 +117,7 @@ void Robot::TeleopPeriodic() {
   }
   else
   {
-    DriveWithJoystick(fieldRelative);
+    DriveWithJoystick(fieldRelative, slowMode);
   }
 
   // Left Switch
@@ -139,12 +126,19 @@ void Robot::TeleopPeriodic() {
   else
     fieldRelative = false;
   
-  // Red Button
+  // Left Back Swtich up
+  if (m_driveController.GetRawButton(5))
+    slowMode = true;
+  else
+    slowMode = false;
+
+  // Right Switch
   if (m_driveController.GetRawButton(2))
     isParked = true;
   else
     isParked = false;
   
+  // Red Reset button
   if (m_driveController.GetRawButtonPressed(3))
     m_swerve.ResetGyro();
 
@@ -270,37 +264,52 @@ void Robot::TestPeriodic() {}
 void Robot::SimulationInit() {}
 void Robot::SimulationPeriodic() {}
 
-void Robot::DriveWithJoystick(bool fieldRelative) {
-    driveJoystickAdjustedInputX = (m_driveController.GetRawAxis(2) * m_driveController.GetRawAxis(2));
-    if (m_driveController.GetRawAxis(2) < 0)
-      driveJoystickAdjustedInputX = -driveJoystickAdjustedInputX;
-    driveJoystickAdjustedInputY = (m_driveController.GetRawAxis(4) * m_driveController.GetRawAxis(4));
-    if (m_driveController.GetRawAxis(4) < 0)
-      driveJoystickAdjustedInputY = -driveJoystickAdjustedInputY;
+void Robot::DriveWithJoystick(bool fieldRelative, bool slowMode) {
 
-    // If I don't want to drive with expoential control
-    if (!exponentialDriveControl)
-    {
-      driveJoystickAdjustedInputX = m_driveController.GetRawAxis(2);
-      driveJoystickAdjustedInputY = m_driveController.GetRawAxis(4);
-    } 
-    // Get the x speed. We are inverting this because Xbox controllers return
-    // negative values when we push forward.
-    const auto xSpeed = -m_xspeedLimiter.Calculate((1.66667 * frc::ApplyDeadband(driveJoystickAdjustedInputX, 0.02))) * Drivetrain::kMaxSpeed;    
-
-    // Get the y speed or sideways/strafe speed. We are inverting this because
-    // we want a positive value when we pull to the left. Xbox controllers
-    // return positive values when you pull to the right by default.
-    const auto ySpeed = -m_yspeedLimiter.Calculate((1.66667 * frc::ApplyDeadband(driveJoystickAdjustedInputY, 0.02))) * Drivetrain::kMaxSpeed;
-
-    // Get the rate of angular rotation. We are inverting this because we want a
-    // positive value when we pull to the left (remember, CCW introllers return posits positive in
-    // mathematics). Xbox coive values when you pull to
-    // the right by default.
-    const auto rot = -m_rotLimiter.Calculate((1.25 * frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.07))) * Drivetrain::kMaxAngularSpeed;
-
-    m_swerve.Drive(xSpeed, ySpeed, rot, fieldRelative);
+  // If you are in slow mode, only use one quarter of the drive speed
+  if (slowMode)
+  {
+    driveJoystickAdjustedInputX = 0.25 * (m_driveController.GetRawAxis(2) * m_driveController.GetRawAxis(2));
+    driveJoystickAdjustedInputY = 0.25 * (m_driveController.GetRawAxis(4) * m_driveController.GetRawAxis(4));
   }
+  else
+  {    
+  driveJoystickAdjustedInputX = (m_driveController.GetRawAxis(2) * m_driveController.GetRawAxis(2));
+  driveJoystickAdjustedInputY = (m_driveController.GetRawAxis(4) * m_driveController.GetRawAxis(4));
+  }
+  if (m_driveController.GetRawAxis(2) < 0)
+    driveJoystickAdjustedInputX = -driveJoystickAdjustedInputX;
+  if (m_driveController.GetRawAxis(4) < 0)
+    driveJoystickAdjustedInputY = -driveJoystickAdjustedInputY;
+
+  // If I don't want to drive with expoential control
+  if (!exponentialDriveControl)
+  {
+    if (slowMode)
+    {
+      driveJoystickAdjustedInputX = 0.25 * m_driveController.GetRawAxis(2);
+      driveJoystickAdjustedInputY = 0.25 * m_driveController.GetRawAxis(4);
+    }
+    driveJoystickAdjustedInputX = m_driveController.GetRawAxis(2);
+    driveJoystickAdjustedInputY = m_driveController.GetRawAxis(4);
+  } 
+  // Get the x speed. We are inverting this because Xbox controllers return
+  // negative values when we push forward.
+  const auto xSpeed = -m_xspeedLimiter.Calculate(frc::ApplyDeadband(driveJoystickAdjustedInputX, 0.02)) * Drivetrain::kMaxSpeed;    
+
+  // Get the y speed or sideways/strafe speed. We are inverting this because
+  // we want a positive value when we pull to the left. Xbox controllers
+  // return positive values when you pull to the right by default.
+  const auto ySpeed = -m_yspeedLimiter.Calculate(frc::ApplyDeadband(driveJoystickAdjustedInputY, 0.02)) * Drivetrain::kMaxSpeed;
+
+  // Get the rate of angular rotation. We are inverting this because we want a
+  // positive value when we pull to the left (remember, CCW introllers return posits positive in
+  // mathematics). Xbox coive values when you pull to
+  // the right by default.
+  const auto rot = -m_rotLimiter.Calculate(frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.07)) * Drivetrain::kMaxAngularSpeed;
+
+  m_swerve.Drive(xSpeed, ySpeed, rot, fieldRelative);
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

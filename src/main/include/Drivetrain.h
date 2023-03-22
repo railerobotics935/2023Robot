@@ -41,8 +41,8 @@ public:
   const frc::Pose2d& GetPose();
 
 
-  static constexpr units::meters_per_second_t kMaxSpeed = 8.0_mps;  // 4 meters per second
-  static constexpr units::radians_per_second_t kMaxAngularSpeed{3 * std::numbers::pi};  // 2 rotations per second
+  static constexpr units::meters_per_second_t kMaxSpeed = 12.0_mps;  // 12 meters per second??
+  static constexpr units::radians_per_second_t kMaxAngularSpeed{6 * std::numbers::pi};  // 3 rotations per second??
 
 private:
   // Declaring all of the network table entrys

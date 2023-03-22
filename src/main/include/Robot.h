@@ -118,6 +118,7 @@ private:
 
   bool fieldRelative = true;
   bool isParked = false;
+  bool slowMode = false;
 
   // NetowrkTable Entries
   nt::NetworkTableEntry nte_lowerArmSetpointAngle;
@@ -125,6 +126,6 @@ private:
   nt::NetworkTableEntry nte_wirstSetpointAngle;
   nt::NetworkTableEntry nte_autoMode;
 
-  void DriveWithJoystick(bool fieldRelative);
+  void DriveWithJoystick(bool fieldRelative, bool slowMode);
 
 };
