@@ -32,7 +32,7 @@ public:
   void ResetGyro();
   void Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
               units::radians_per_second_t rot, bool fieldRelative);
-  
+  void UpdateNTE();
   void Park();
 
   void SetAnglePIDValues(double Kp, double Ki, double Kd, double offsetRadians);
@@ -41,11 +41,10 @@ public:
   const frc::Pose2d& GetPose();
 
 
-  static constexpr units::meters_per_second_t kMaxSpeed = 12.0_mps;  // 12 meters per second??
-  static constexpr units::radians_per_second_t kMaxAngularSpeed{6 * std::numbers::pi};  // 3 rotations per second??
+  static constexpr units::meters_per_second_t kMaxSpeed = 9.0_mps;  // 12 meters per second??
+  static constexpr units::radians_per_second_t kMaxAngularSpeed{3 * std::numbers::pi};  // 3 rotations per second??
 
-private:
-  // Declaring all of the network table entrys
+private:  // Declaring all of the network table entrys
   nt::NetworkTableEntry nte_fl_set_angle;
   nt::NetworkTableEntry nte_fr_set_angle;
   nt::NetworkTableEntry nte_bl_set_angle;
@@ -64,6 +63,11 @@ private:
   nt::NetworkTableEntry nte_bl_real_speed;
   nt::NetworkTableEntry nte_br_real_speed;
 
+  nt::NetworkTableEntry nte_fl_raw_encoder_voltage;
+  nt::NetworkTableEntry nte_fr_raw_encoder_voltage;
+  nt::NetworkTableEntry nte_bl_raw_encoder_voltage;
+  nt::NetworkTableEntry nte_br_raw_encoder_voltage;
+
   nt::NetworkTableEntry nte_gyro_angle;
   nt::NetworkTableEntry nte_robot_x;
   nt::NetworkTableEntry nte_robot_y;
@@ -76,16 +80,16 @@ private:
   frc::Translation2d m_backRightLocation{-0.354_m, -0.1125_m};
 
   // Offsets in radians for the encoders. 
-  double flEncoderOffset = 0.939;
-  double frEncoderOffset = 2.605;
-  double blEncoderOffset = -0.234;
-  double brEncoderOffset = -1.877;
+  double flEncoderOffset = 1.113; //0.939;
+  double frEncoderOffset = 2.787; //2.605;
+  double blEncoderOffset = -0.155; //-0.234;
+  double brEncoderOffset = -1.850; //-1.877;
 
   // Creating the four swerve modules
   SwerveModule m_frontLeft{11, 12, 0, flEncoderOffset};
   SwerveModule m_frontRight{9, 10, 1, frEncoderOffset};
   SwerveModule m_backLeft{19, 20, 2, blEncoderOffset};
-  SwerveModule m_backRight{1, 2, 3, brEncoderOffset};
+  SwerveModule m_backRight{21, 2, 3, brEncoderOffset};
 
   frc::ADIS16470_IMU m_gyro;
 

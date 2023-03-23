@@ -31,6 +31,7 @@ public:
   
   frc::SwerveModuleState GetState() const;
   frc::SwerveModulePosition GetPosition() const;
+  double GetEncoderVoltage();
   void SetDesiredState(const frc::SwerveModuleState& state);
 
 

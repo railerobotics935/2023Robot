@@ -31,6 +31,11 @@ Drivetrain::Drivetrain()
   nte_bl_real_speed = nt_table->GetEntry("Swerve Drive/Back Left/Real Speed");
   nte_br_real_speed = nt_table->GetEntry("Swerve Drive/Back Right/Real Speed");
 
+  nte_fl_raw_encoder_voltage = nt_table->GetEntry("Swerve Drive/Front Left/Encoder Voltage");
+  nte_fr_raw_encoder_voltage = nt_table->GetEntry("Swerve Drive/Front Right/Encoder Voltage");
+  nte_bl_raw_encoder_voltage = nt_table->GetEntry("Swerve Drive/Back Left/Encoder Voltage");
+  nte_br_raw_encoder_voltage = nt_table->GetEntry("Swerve Drive/Back Right/Encoder Voltage");
+
   nte_gyro_angle = nt_table->GetEntry("Swerve Drive/Gyro Angle");
   nte_robot_x = nt_table->GetEntry("Swerve Drive/Robot X");
   nte_robot_y = nt_table->GetEntry("Swerve Drive/Robot Y");
@@ -103,6 +108,30 @@ m_odometry.Update(m_gyro.GetAngle(),
   nte_robot_y.SetDouble((double)m_odometry.GetPose().Y());
 }
 
+void Drivetrain::UpdateNTE()
+{
+  nte_fl_real_angle.SetDouble((double)m_frontLeft.GetState().angle.Radians());
+  nte_fr_real_angle.SetDouble((double)m_frontRight.GetState().angle.Radians());
+  nte_bl_real_angle.SetDouble((double)m_backLeft.GetState().angle.Radians());
+  nte_br_real_angle.SetDouble((double)m_backRight.GetState().angle.Radians());
+  nte_fl_real_speed.SetDouble((double)m_frontLeft.GetState().speed);
+  nte_fr_real_speed.SetDouble((double)m_frontRight.GetState().speed);
+  nte_bl_real_speed.SetDouble((double)m_backLeft.GetState().speed);
+  nte_br_real_speed.SetDouble((double)m_backRight.GetState().speed);
+
+  nte_fl_raw_encoder_voltage.SetDouble(m_frontLeft.GetEncoderVoltage());
+  nte_fr_raw_encoder_voltage.SetDouble(m_frontRight.GetEncoderVoltage());
+  nte_bl_raw_encoder_voltage.SetDouble(m_backLeft.GetEncoderVoltage());
+  nte_br_raw_encoder_voltage.SetDouble(m_backRight.GetEncoderVoltage());
+
+  m_odometry.Update(m_gyro.GetAngle(),
+                    {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+                     m_backLeft.GetPosition(), m_backRight.GetPosition()});
+                     
+  nte_gyro_angle.SetDouble((double)m_odometry.GetPose().Rotation().Radians());
+  nte_robot_x.SetDouble((double)m_odometry.GetPose().X());
+  nte_robot_y.SetDouble((double)m_odometry.GetPose().Y());
+  }
 
 // Park method to lock the wheels rotation in an X shape, applying no power to the drive motors
 void Drivetrain::Park()

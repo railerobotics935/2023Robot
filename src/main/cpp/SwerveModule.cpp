@@ -71,3 +71,8 @@ frc::SwerveModulePosition SwerveModule::GetPosition() const {
           units::radian_t{(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - std::numbers::pi) - kTurningEncoderOffset)}};
 }
 
+double SwerveModule::GetEncoderVoltage()
+{
+  return (double)m_turningEncoder.GetVoltage();
+}
+

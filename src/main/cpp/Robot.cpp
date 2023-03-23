@@ -24,6 +24,7 @@ void Robot::RobotInit() {
 }
 void Robot::RobotPeriodic() {
   m_arm.UpdateNTE();
+  m_swerve.UpdateNTE();
 }
 
 void Robot::AutonomousInit() 
