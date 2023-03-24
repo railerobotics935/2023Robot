@@ -19,15 +19,24 @@ class ArmFunctions
 public:
   ArmFunctions();
   void UpdateNTE();
+
   void SetLowerArmMotor(double percent);
   void SetPushRodArmMotor(double precent);
   void SetTurretMotor(double percent);
   void SetIntakeMotor(double precent);
   void SetWristServo(double angle);
+  void SetWristAngle(double angle);
   void SetTurretAngle(double angle);
   void SetLowerArmAngle(double angle);
   void SetPushRodArmAdjustedAngle(double angle);
   void SetPushRodArmRawAngle(double angle);
+
+  void SetArmToHome();
+  void SetArmForMidCone();
+  void SetArmForHighCone();
+  void SetArmForFloorCubeIntake();
+  void SetArmForConeDrop();
+
   double GetPushRodArmEncoder();
   double GetWristServoSensor();
   double GetPushRodArmAngle();
@@ -49,7 +58,7 @@ private:
   // measured offsets DON'T TOUCH
   double turretEncoderOffset = -0.972;
   double lowerArmEncoderOffset = 2.00 + (0.5 * std::numbers::pi); // measured at pi/2
-  double pushRodArmEcoderOffset = 1.694 + (0.5 * std::numbers::pi); // measured at pi/2
+  double pushRodArmEcoderOffset = -2.357 + (0.5 * std::numbers::pi); // measured at pi/2
   double wristServoOffset = 0.5;
 
   // Arm Limits. the push rod arm is using the raw angle

@@ -114,6 +114,11 @@ void ArmFunctions::SetWristServo(double angle)
   wristServo.Set(wristServoOffset + (angle/(std::numbers::pi*3)));
 }
 
+// Sets wrist angle reletive to the robt
+void ArmFunctions::SetWristAngle(double angle)
+{
+  wristServo.Set(wristServoOffset + (angle/(std::numbers::pi*3)) + GetPushRodArmAngle());
+}
 // Sets turret to a specified angle ONLY input inbetween +- 0.1919
 void ArmFunctions::SetTurretAngle(double angle)
 {
@@ -184,14 +189,12 @@ void ArmFunctions::SetPushRodArmRawAngle(double angle)
     if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/3)))
     {
       pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 2/3)));
-      std::cout << "1\r\n";
     }
     else if (angle > pushRodArmLimit)
       pushRodArmPID.SetSetpoint(angle);
     else
     {
       pushRodArmPID.SetSetpoint(pushRodArmLimit);
-      std::cout << "4\r\n";
     }
   }
   else if (angle > idlePushRodArmThreshold)
@@ -209,7 +212,6 @@ void ArmFunctions::SetPushRodArmRawAngle(double angle)
     if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/4)))
     {
       pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 3/4)));
-      std::cout << "3\r\n";
     }
     else
       pushRodArmPID.SetSetpoint(angle);
@@ -236,3 +238,39 @@ void ArmFunctions::SetPushRodArmAdjustedAngle(double angle)
   pushRodArmMotor.SetVoltage(units::volt_t{pushRodArmOutput});
 }
 */
+
+// All are preset positions for the arm
+void ArmFunctions::SetArmToHome()
+{
+  SetLowerArmAngle(0.0);
+  SetPushRodArmRawAngle(0.0);
+  SetWristServo(0.75);
+}
+
+void ArmFunctions::SetArmForMidCone()
+{
+  SetLowerArmAngle(1.336);
+  SetPushRodArmRawAngle(1.877);
+  SetWristServo(0.0); // Horizontal
+}
+
+void ArmFunctions::SetArmForHighCone()
+{
+  SetLowerArmAngle(0.0);
+  SetPushRodArmRawAngle(0.0);
+  SetWristServo(0.0);
+}
+
+void ArmFunctions::SetArmForFloorCubeIntake()
+{
+  SetLowerArmAngle(0.811);
+  SetPushRodArmRawAngle(3.013);
+  SetWristServo(0.3); // NOT MEASURED a little lower than horizontal
+}
+
+void ArmFunctions::SetArmForConeDrop()
+{
+  SetLowerArmAngle(0.0);
+  SetPushRodArmRawAngle(0.0);
+  SetWristServo(0.0);
+}

@@ -309,6 +309,8 @@ void Robot::DriveWithJoystick(bool fieldRelative, bool slowMode) {
   // the right by default.
   const auto rot = -m_rotLimiter.Calculate(frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.07)) * Drivetrain::kMaxAngularSpeed;
 
+  std::cout << "X Speed: " << (double)xSpeed << "\r\n";
+
   m_swerve.Drive(xSpeed, ySpeed, rot, fieldRelative);
 }
 
