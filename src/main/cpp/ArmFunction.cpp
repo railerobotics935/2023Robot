@@ -186,9 +186,9 @@ void ArmFunctions::SetPushRodArmRawAngle(double angle)
   // Double check the angle is ok
   if (GetPushRodArmEncoder() < pushRodArmLimit)
   {
-    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/3)))
+    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/6)))
     {
-      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 2/3)));
+      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 5/6)));
     }
     else if (angle > pushRodArmLimit)
       pushRodArmPID.SetSetpoint(angle);
@@ -209,9 +209,9 @@ void ArmFunctions::SetPushRodArmRawAngle(double angle)
   }
   else
   {
-    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/4)))
+    if ((-angle + std::numbers::pi) > (GetLowerArmAngle() + (std::numbers::pi/6)))
     {
-      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 3/4)));
+      pushRodArmPID.SetSetpoint(-(GetLowerArmAngle() - (std::numbers::pi * 5/6)));
     }
     else
       pushRodArmPID.SetSetpoint(angle);

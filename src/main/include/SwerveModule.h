@@ -43,7 +43,7 @@ private:
   static constexpr double kGearRatio = 6.75;
 
   static constexpr auto kModuleMaxAngularVelocity = 18.0 * std::numbers::pi * 1_rad_per_s;  // radians per second
-  static constexpr auto kModuleMaxAngularAcceleration = 18.0 * std::numbers::pi * 2_rad_per_s / 1_s;  // radians per second^2
+  static constexpr auto kModuleMaxAngularAcceleration = 8.0 * std::numbers::pi * 2_rad_per_s / 1_s;  // radians per second^2
 
   double kTurningEncoderOffset;
 

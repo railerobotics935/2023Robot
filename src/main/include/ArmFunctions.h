@@ -58,12 +58,12 @@ private:
   // measured offsets DON'T TOUCH
   double turretEncoderOffset = -0.972;
   double lowerArmEncoderOffset = 2.00 + (0.5 * std::numbers::pi); // measured at pi/2
-  double pushRodArmEcoderOffset = -2.357 + (0.5 * std::numbers::pi); // measured at pi/2
+  double pushRodArmEcoderOffset = 2.357 + (0.5 * std::numbers::pi); // measured at pi/2
   double wristServoOffset = 0.5;
 
   // Arm Limits. the push rod arm is using the raw angle
-  double lowerArmLimit = 1.755;
-  double pushRodArmLimit = 1.0;
+  double lowerArmLimit = 1.85;
+  double pushRodArmLimit = 0.9;
   double turretLimit = (4 * std::numbers::pi / 180.0);
   double idleLowerArmThreshold = 0.119;
   double idlePushRodArmThreshold = 3.0415;

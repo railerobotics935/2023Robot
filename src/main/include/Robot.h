@@ -64,7 +64,7 @@ private:
 
   // Configuration information
   bool setpointController = true;
-  bool customArmController = true;
+  bool customArmController = false;
   bool exponentialDriveControl = true;
 
   bool controllerStartedNeutral = false;
@@ -84,8 +84,8 @@ private:
   double pushRodArmInputRange = -1.23;
 
   // Range set to the controller also check the arm funcitons limit
-  double workingLowerArmRange = 2.0;
-  double workingPushRodArmRange = 1.855;
+  double workingLowerArmRange = 2.1;
+  double workingPushRodArmRange = 2.0;
 
   // TEMPORARY FIX!!! COME BACK TO FIX
   double totalWristRange = std::numbers::pi * 2; // 270 ish degrees
