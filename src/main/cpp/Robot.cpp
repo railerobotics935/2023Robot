@@ -13,6 +13,13 @@
 #include <frc/shuffleboard/ShuffleboardTab.h>
 #include "Robot.h"
 #include "ArmFunctions.h"
+#include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/auto/SwerveAutoBuilder.h>
+#include <pathplanner/lib/commands/PPSwerveControllerCommand.h>
+#include <pathplanner/lib/commands/FollowPathWithEvents.h>
+
+using namespace pathplanner;
 
 void Robot::RobotInit() {
     // Initialize shuffleboard communication
@@ -90,6 +97,7 @@ void Robot::AutonomousPeriodic()
     std::cout << "Something went wrong...\r\n";
     break;
   }
+
 
 }
 
@@ -213,22 +221,21 @@ void Robot::TeleopPeriodic() {
       }
       
       // Wrist input
-      wristSetAngle = wristSetAngle + (frc::ApplyDeadband(m_opController.GetRawAxis(0) + wristTrim, 0.1) * 0.02);
-      if (wristSetAngle > std::numbers::pi/3)
-        wristSetAngle = std::numbers::pi/3;
-      if (wristSetAngle < -std::numbers::pi/2)
-        wristSetAngle = -std::numbers::pi/2;
       m_arm.SetWristServo(wristSetAngle);
       nte_wirstSetpointAngle.SetDouble(wristSetAngle);
 
       // Intake controll, Red button is one
       if (m_opController.GetRawButton(1))
       {
+        wristSetAngle = wristSetAngle + 0.01;
         m_arm.SetIntakeMotor(1.0);
         std::cout << "1\r\n";
       }
       else if (m_opController.GetRawButton(4))
+      {
+        wristSetAngle = wristSetAngle - 0.01;
         m_arm.SetIntakeMotor(-1.0);
+      }
       else
         m_arm.SetIntakeMotor(0.0);
     }

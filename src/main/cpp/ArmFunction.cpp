@@ -111,13 +111,13 @@ void ArmFunctions::SetIntakeMotor(double precent)
 // Sets wrist angle reletive to the push rod arm
 void ArmFunctions::SetWristServo(double angle)
 {
-  wristServo.Set(wristServoOffset + (angle/(std::numbers::pi*3)));
+  wristServo.Set(wristServoOffset + (angle/wristServoRange));
 }
 
 // Sets wrist angle reletive to the robt
 void ArmFunctions::SetWristAngle(double angle)
 {
-  wristServo.Set(wristServoOffset + (angle/(std::numbers::pi*3)) + GetPushRodArmAngle());
+  //wristServo.Set(wristServoOffset + (angle/(std::numbers::pi*3)) + GetPushRodArmAngle());
 }
 // Sets turret to a specified angle ONLY input inbetween +- 0.1919
 void ArmFunctions::SetTurretAngle(double angle)

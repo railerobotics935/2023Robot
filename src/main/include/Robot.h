@@ -84,7 +84,7 @@ private:
   double pushRodArmInputRange = -1.23;
 
   // Range set to the controller also check the arm funcitons limit
-  double workingLowerArmRange = 2.1;
+  double workingLowerArmRange = 1.8;
   double workingPushRodArmRange = 2.0;
 
   // TEMPORARY FIX!!! COME BACK TO FIX

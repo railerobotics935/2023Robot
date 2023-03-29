@@ -81,7 +81,7 @@ private:  // Declaring all of the network table entrys
 
   // Offsets in radians for the encoders. 
   double flEncoderOffset = 1.113; //0.939;
-  double frEncoderOffset = 2.787; //2.605;
+  double frEncoderOffset = 2.787; //2.605-180
   double blEncoderOffset = -0.155; //-0.234;
   double brEncoderOffset = -1.850; //-1.877;
 

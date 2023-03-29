@@ -58,13 +58,14 @@ private:
   // measured offsets DON'T TOUCH
   double turretEncoderOffset = -0.972;
   double lowerArmEncoderOffset = 2.00 + (0.5 * std::numbers::pi); // measured at pi/2
-  double pushRodArmEcoderOffset = 2.357 + (0.5 * std::numbers::pi); // measured at pi/2
-  double wristServoOffset = 0.5;
+  double pushRodArmEcoderOffset = 3.428 + (0.5 * std::numbers::pi); // measured at pi/2
+  double wristServoOffset = 0.46;
 
   // Arm Limits. the push rod arm is using the raw angle
-  double lowerArmLimit = 1.85;
-  double pushRodArmLimit = 0.9;
+  double lowerArmLimit = 1.7;
+  double pushRodArmLimit = 0.85;
   double turretLimit = (4 * std::numbers::pi / 180.0);
+  double wristServoRange = (std::numbers::pi * 3) / 2;
   double idleLowerArmThreshold = 0.119;
   double idlePushRodArmThreshold = 3.0415;
   bool lowerArmIdleMode = true;
@@ -85,7 +86,7 @@ private:
   // PID controllers for the arm
   frc2::PIDController turretPID{15.0, 0.0, 0.0};
   frc2::PIDController lowerArmPID{10.0, 5.0, 1.0};
-  frc2::PIDController pushRodArmPID{15.0, 3.0, 0.2};
+  frc2::PIDController pushRodArmPID{35.0, 15.0, 0.5};
 
   double turretOutput = 0.0;
   double lowerArmOutput = 0.0;
