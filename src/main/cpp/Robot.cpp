@@ -11,13 +11,23 @@
 #include <networktables/NetworkTableEntry.h>
 #include <frc/shuffleboard/ShuffleboardLayout.h>
 #include <frc/shuffleboard/ShuffleboardTab.h>
-#include "Robot.h"
-#include "ArmFunctions.h"
+
+#include <frc2/command/CommandHelper.h>
+#include <frc2/command/CommandScheduler.h>
+#include <frc2/command/Command.h>
+#include <frc2/command/PrintCommand.h>
+#include <frc2/command/RunCommand.h>
+
 #include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/commands/FollowPathWithEvents.h>
+
 #include <pathplanner/lib/PathPlanner.h>
 #include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <pathplanner/lib/commands/PPSwerveControllerCommand.h>
 #include <pathplanner/lib/commands/FollowPathWithEvents.h>
+
+#include "Robot.h"
+#include "ArmFunctions.h"
 
 using namespace pathplanner;
 
@@ -97,8 +107,21 @@ void Robot::AutonomousPeriodic()
     std::cout << "Something went wrong...\r\n";
     break;
   }
+  frc2::CommandScheduler::GetInstance().Run();
+  
+// This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+PathPlannerTrajectory examplePath = PathPlanner::loadPath("Test Drive Forward", PathConstraints((units::meters_per_second_t)4,(units::meters_per_second_squared_t)3));
 
-
+// This is just an example event map. It would be better to have a constant, global event map
+// in your code that will be used by all path following commands.
+std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap;
+eventMap.emplace("marker1", std::make_shared<frc2::PrintCommand>("Passed marker 1"));
+/*
+FollowPathWithEvents command(
+    getPathFollowingCommand(examplePath),
+    examplePath.getMarkers(),
+    eventMap);
+*/
 }
 
 void Robot::TeleopInit() {

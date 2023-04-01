@@ -26,7 +26,7 @@
 #include <frc/Servo.h>
 
 #include "ArmFunctions.h"
-#include "Drivetrain.h"
+#include "Drivetrain/Drivetrain.h"
 
 class Robot : public frc::TimedRobot {
 public:
