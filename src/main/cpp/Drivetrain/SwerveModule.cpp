@@ -4,6 +4,7 @@
 
 #include "Drivetrain/SwerveModule.h"
 
+#define USE_ROBORIO_ANALOG_INPUTS
 
 SwerveModule::SwerveModule(const int driveMotorChannel,
                            const int turningMotorChannel,
