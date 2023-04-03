@@ -12,6 +12,7 @@
 #include <frc/AnalogPotentiometer.h>
 #include <frc/Servo.h>
 #include <frc/controller/PIDController.h>
+#include <numbers>
 #include "ctre/phoenix.h"
 
 class ArmFunctions
