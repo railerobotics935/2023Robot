@@ -31,6 +31,17 @@ SwerveModule::SwerveModule(const int driveMotorChannel,
   kTurningEncoderOffset = turningEncoderOffset;
 }
 
+frc::SwerveModuleState SwerveModule::GetState() const
+{
+  return {units::meters_per_second_t{m_driveEncoder.GetVelocity()},
+          units::radian_t(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - std::numbers::pi) - kTurningEncoderOffset)};
+}
+
+frc::SwerveModulePosition SwerveModule::GetPosition() const {
+  return {units::meter_t{m_driveEncoder.GetPosition()},
+          units::radian_t{(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - std::numbers::pi) - kTurningEncoderOffset)}};
+}
+
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceState)
 {
   // Optimize the reference state to avoid spinning further than 90 degrees
@@ -58,17 +69,6 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceState)
 
   m_turningMotor.SetVoltage(units::volt_t{turnOutput});
   //m_turningMotor.SetVoltage(-(units::volt_t{turnOutput} + turnFeedforward));
-}
-
-frc::SwerveModuleState SwerveModule::GetState() const
-{
-  return {units::meters_per_second_t{m_driveEncoder.GetVelocity()},
-          units::radian_t(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - std::numbers::pi) - kTurningEncoderOffset)};
-}
-
-frc::SwerveModulePosition SwerveModule::GetPosition() const {
-  return {units::meter_t{m_driveEncoder.GetPosition()},
-          units::radian_t{(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - std::numbers::pi) - kTurningEncoderOffset)}};
 }
 
 double SwerveModule::GetEncoderVoltage()

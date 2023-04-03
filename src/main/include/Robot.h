@@ -2,11 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-// Anything with the number 2 on the end has to do with the 
+// Anything with the number 2 on the end has to do with the Custom Controller
 #pragma once
 
-#include <frc/TimedRobot.h>
+#include <optional>
 
+#include <frc/TimedRobot.h>
+#include <frc2/command/CommandPtr.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <frc/smartdashboard/Field2d.h>
 #include <frc/smartdashboard/SmartDashboard.h>
@@ -27,6 +29,8 @@
 
 #include "ArmFunctions.h"
 #include "Drivetrain/Drivetrain.h"
+#include "RobotContainer.h"
+
 
 class Robot : public frc::TimedRobot {
 public:
@@ -127,5 +131,14 @@ private:
   nt::NetworkTableEntry nte_autoMode;
 
   void DriveWithJoystick(bool fieldRelative, bool slowMode);
+
+
+  // command stuff for auto or something
+
+  // Have it empty by default so that if testing teleop it
+  // doesn't have undefined behavior and potentially crash.
+  std::optional<frc2::CommandPtr> m_autonomousCommand;
+
+  RobotContainer m_container;
 
 };

@@ -12,20 +12,9 @@
 #include <frc/shuffleboard/ShuffleboardLayout.h>
 #include <frc/shuffleboard/ShuffleboardTab.h>
 
-#include <frc2/command/CommandHelper.h>
 #include <frc2/command/CommandScheduler.h>
-#include <frc2/command/Command.h>
-#include <frc2/command/PrintCommand.h>
-#include <frc2/command/RunCommand.h>
-
-#include <pathplanner/lib/PathPlannerTrajectory.h>
-#include <pathplanner/lib/commands/FollowPathWithEvents.h>
 
 #include <pathplanner/lib/PathPlanner.h>
-#include <pathplanner/lib/auto/SwerveAutoBuilder.h>
-#include <pathplanner/lib/commands/PPSwerveControllerCommand.h>
-#include <pathplanner/lib/commands/FollowPathWithEvents.h>
-
 #include "Robot.h"
 #include "ArmFunctions.h"
 
@@ -42,6 +31,7 @@ void Robot::RobotInit() {
 void Robot::RobotPeriodic() {
   m_arm.UpdateNTE();
   m_swerve.UpdateNTE();
+  //frc2::CommandScheduler::GetInstance().Run();
 }
 
 void Robot::AutonomousInit() 
@@ -52,6 +42,12 @@ void Robot::AutonomousInit()
   initialPose2d = m_swerve.GetPose();
   autoTimer.Reset();
   autoTimer.Start();
+
+  m_autonomousCommand = m_container.GetAutonomousCommand();
+
+  if (m_autonomousCommand) {
+    m_autonomousCommand->Schedule();
+  }
 }
 void Robot::AutonomousPeriodic() 
 {
@@ -115,7 +111,7 @@ PathPlannerTrajectory examplePath = PathPlanner::loadPath("Test Drive Forward", 
 // This is just an example event map. It would be better to have a constant, global event map
 // in your code that will be used by all path following commands.
 std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap;
-eventMap.emplace("marker1", std::make_shared<frc2::PrintCommand>("Passed marker 1"));
+//eventMap.emplace("marker1", std::make_shared<frc2::PrintCommand>("Passed marker 1"));
 /*
 FollowPathWithEvents command(
     getPathFollowingCommand(examplePath),
@@ -172,7 +168,7 @@ void Robot::TeleopPeriodic() {
   
   // Red Reset button
   if (m_driveController.GetRawButtonPressed(3))
-    m_swerve.ResetGyro();
+    m_swerve.ZeroHeading();
 
   // Deafult is to run on setpoint control
   if (setpointController)

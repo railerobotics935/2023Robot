@@ -4,11 +4,7 @@
 
 #include "Drivetrain/Drivetrain.h"
 
-Drivetrain::Drivetrain()
-{
-  m_gyro.Reset();
-  m_gyro.SetYawAxis(frc::ADIS16470_IMU::IMUAxis::kZ);
-
+Drivetrain::Drivetrain(){
   // Initialize shuffleboard communication
   auto nt_inst = nt::NetworkTableInstance::GetDefault();
   auto nt_table = nt_inst.GetTable("datatable");
@@ -41,23 +37,11 @@ Drivetrain::Drivetrain()
   nte_robot_y = nt_table->GetEntry("Swerve Drive/Robot Y");
 }
 
-/*
-
-Didn't work for some reason. If we don't have to reset the odometry of the robot then we shouldn't...
-
-void Drivetrain::ResetOdometry(const frc::Pose2d& pose)
-{
-  m_odometry.ResetPosition(m_gyro.GetAngle(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
-       m_backLeft.GetPosition(), m_backRight.GetPosition()},pose);
-}
-
-
-*/
-
-// Resets Gyro
-void Drivetrain::ResetGyro()
-{
-  m_gyro.Reset();
+void Drivetrain::Periodic() {
+  // Implementation of subsystem periodic method goes here.
+  m_odometry.Update(GetHeading(),
+                    {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+                    m_backLeft.GetPosition(), m_backRight.GetPosition()});
 }
 
 void Drivetrain::GetGyroAngle()
@@ -108,6 +92,21 @@ m_odometry.Update(m_gyro.GetAngle(),
   nte_robot_y.SetDouble((double)m_odometry.GetPose().Y());
 }
 
+void Drivetrain::SetModuleStates(
+    wpi::array<frc::SwerveModuleState, 4> desiredStates) {
+  m_kinematics.DesaturateWheelSpeeds(&desiredStates, kMaxSpeed);
+
+  m_frontLeft.SetDesiredState(desiredStates[0]);
+  m_frontRight.SetDesiredState(desiredStates[1]);
+  m_backLeft.SetDesiredState(desiredStates[2]);
+  m_backRight.SetDesiredState(desiredStates[3]);
+}
+
+units::radian_t Drivetrain::GetHeading() const {
+  units::radian_t returnValue = m_gyro.GetAngle();
+  return returnValue;
+}
+
 void Drivetrain::UpdateNTE()
 {
   nte_fl_real_angle.SetDouble((double)m_frontLeft.GetState().angle.Radians());
@@ -153,6 +152,26 @@ void Drivetrain::Park()
   m_backRight.SetDesiredState(br);
 }
 
+void Drivetrain::ZeroHeading() {
+  m_gyro.Reset();
+}
+
+units::radians_per_second_t Drivetrain::GetTurnRate() {
+  units::radians_per_second_t returnValue =  m_gyro.GetRate();
+  return returnValue;
+}
+
+frc::Pose2d Drivetrain::GetPose() {
+  return m_odometry.GetPose();
+}
+
+void Drivetrain::ResetOdometry(frc::Pose2d pose) {
+  m_odometry.ResetPosition(
+      GetHeading(),
+      {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
+       m_backLeft.GetPosition(), m_backRight.GetPosition()},
+      pose);
+}
 
 void Drivetrain::SetAnglePIDValues(double Kp, double Ki, double Kd, double offsetRadians)
 {
@@ -160,7 +179,9 @@ void Drivetrain::SetAnglePIDValues(double Kp, double Ki, double Kd, double offse
   yawSetpoint = (double)GetPose().Rotation().Radians() + offsetRadians;
   m_yawPID.SetSetpoint(yawSetpoint);
 }
-const frc::Pose2d& Drivetrain::GetPose()
-{
-  return m_odometry.GetPose();
+
+frc2::CommandPtr Drivetrain::TestMethodCommand() {
+  // Inline construction of command goes here.
+  // Subsystem::RunOnce implicitly requires `this` subsystem.
+  return RunOnce([this] {printf("Test Method Command has Ran\r\n");});
 }
