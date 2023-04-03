@@ -73,11 +73,11 @@ private:  // Declaring all of the network table entrys
   nt::NetworkTableEntry nte_robot_y;
 
   // Righthand rule coordinate system: X positive to front, Y positive to left
-  // Dimentions of the center of the wheeles - 22.5cm by 70.8  
-  frc::Translation2d m_frontLeftLocation{+0.354_m, +0.1125_m};
-  frc::Translation2d m_frontRightLocation{+0.354_m, -0.1125_m};
-  frc::Translation2d m_backLeftLocation{-0.354_m, +0.1125_m};
-  frc::Translation2d m_backRightLocation{-0.354_m, -0.1125_m};
+  // Dimensions of the center of the wheels - 53 cm by 70.8  
+  frc::Translation2d m_frontLeftLocation{+0.354_m, +0.265_m};
+  frc::Translation2d m_frontRightLocation{+0.354_m, -0.265_m};
+  frc::Translation2d m_backLeftLocation{-0.354_m, +0.265_m};
+  frc::Translation2d m_backRightLocation{-0.354_m, -0.265_m};
 
   // Offsets in radians for the encoders. 
   double flEncoderOffset = 1.113; //0.939;

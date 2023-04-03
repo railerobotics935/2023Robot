@@ -20,8 +20,8 @@
 #include <units/voltage.h>
 #include <frc/simulation/EncoderSim.h>
 #include "ctre/phoenix.h"
-#include "rev/CANSparkMax.h" 
-
+#include "rev/CANSparkMax.h"
+#include "rev/SparkMaxAnalogSensor.h"
 
 
 class SwerveModule
@@ -29,14 +29,17 @@ class SwerveModule
 public:
   SwerveModule(int driveMotorChannel, int turningMotorChannel, int turningEncoderChannel, double turningEncoderOffset);
   
-  frc::SwerveModuleState GetState() const;
-  frc::SwerveModulePosition GetPosition() const;
+//  frc::SwerveModuleState GetState() const;
+  frc::SwerveModuleState GetState();
+//  frc::SwerveModulePosition GetPosition() const;
+  frc::SwerveModulePosition GetPosition();
   double GetEncoderVoltage();
   void SetDesiredState(const frc::SwerveModuleState& state);
 
 
 private:
   static constexpr double ANALOG_TO_RAD_FACTOR = 1.2566;     // 0 to 5.0 volt = 2PI rad
+  static constexpr double SPARK_MAX_ANALOG_TO_RAD_FACTOR = 1.9040;     // 0 to 3.3 volt = 2PI rad
 
   static constexpr double kWheelRadius = 0.0508;
   static constexpr int kEncoderResolution = 42;

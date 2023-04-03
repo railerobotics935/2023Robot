@@ -34,8 +34,13 @@ SwerveModule::SwerveModule(const int driveMotorChannel,
 void SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceState)
 {
   // Optimize the reference state to avoid spinning further than 90 degrees
+#ifdef USE_ROBORIO_ANALOG_INPUTS
   const auto state = frc::SwerveModuleState::Optimize(
       referenceState, units::radian_t(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - kTurningEncoderOffset) - std::numbers::pi));
+#else
+  const auto state = frc::SwerveModuleState::Optimize(
+      referenceState, units::radian_t(((m_driveMotor.GetAnalog().GetVoltage() * SPARK_MAX_ANALOG_TO_RAD_FACTOR) - kTurningEncoderOffset) - std::numbers::pi));
+#endif
 
   // Calculate the drive output from the drive PID controller.
   const auto driveOutput = m_drivePIDController.Calculate(
@@ -45,8 +50,13 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceState)
   const auto driveFeedforward = m_driveFeedforward.Calculate(state.speed);
 
   // Calculate the turning motor output from the turning PID controller.
+#ifdef USE_ROBORIO_ANALOG_INPUTS
   const auto turnOutput = m_turningPIDController.Calculate(
       units::radian_t(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - kTurningEncoderOffset) - std::numbers::pi), state.angle.Radians());
+#else
+  const auto turnOutput = m_turningPIDController.Calculate(
+      units::radian_t(((m_driveMotor.GetAnalog().GetVoltage() * SPARK_MAX_ANALOG_TO_RAD_FACTOR) - kTurningEncoderOffset) - std::numbers::pi), state.angle.Radians());
+#endif
 
   const auto turnFeedforward = m_turnFeedforward.Calculate(m_turningPIDController.GetSetpoint().velocity);
 
@@ -60,19 +70,36 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceState)
   //m_turningMotor.SetVoltage(-(units::volt_t{turnOutput} + turnFeedforward));
 }
 
-frc::SwerveModuleState SwerveModule::GetState() const
+//frc::SwerveModuleState SwerveModule::GetState() const
+frc::SwerveModuleState SwerveModule::GetState()
 {
+#ifdef USE_ROBORIO_ANALOG_INPUTS
   return {units::meters_per_second_t{m_driveEncoder.GetVelocity()},
           units::radian_t(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - std::numbers::pi) - kTurningEncoderOffset)};
+#else
+  return {units::meters_per_second_t{m_driveEncoder.GetVelocity()},
+          units::radian_t(((m_driveMotor.GetAnalog().GetVoltage() * SPARK_MAX_ANALOG_TO_RAD_FACTOR) - std::numbers::pi) - kTurningEncoderOffset)};
+#endif
 }
 
-frc::SwerveModulePosition SwerveModule::GetPosition() const {
+//frc::SwerveModulePosition SwerveModule::GetPosition() const
+frc::SwerveModulePosition SwerveModule::GetPosition()
+{
+#ifdef USE_ROBORIO_ANALOG_INPUTS
   return {units::meter_t{m_driveEncoder.GetPosition()},
           units::radian_t{(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - std::numbers::pi) - kTurningEncoderOffset)}};
+#else
+  return {units::meter_t{m_driveEncoder.GetPosition()},
+          units::radian_t{(((m_driveMotor.GetAnalog().GetVoltage() * SPARK_MAX_ANALOG_TO_RAD_FACTOR) - std::numbers::pi) - kTurningEncoderOffset)}};
+#endif
 }
 
 double SwerveModule::GetEncoderVoltage()
 {
+#ifdef USE_ROBORIO_ANALOG_INPUTS
   return (double)m_turningEncoder.GetVoltage();
+#else
+  return (double)m_driveMotor.GetAnalog().GetVoltage();
+#endif
 }
 
