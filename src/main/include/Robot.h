@@ -97,14 +97,14 @@ private:
   double wristTrim = 0.13;
 
   // Oporator joystick trim adjustment for the custom arm controller
-  double lowerArmTrim2 = 0.0;
-  double pushRodArmTrim2 = 0.0;
-  double wristTrim2 = 0.70;
+  double lowerArmTrim2 = -0.25;
+  double pushRodArmTrim2 = 0.07;
+  double wristTrim2 = -0.05;
 
   // Maximun range input for the 
-  double lowerArmInputRange2 = -0.35;
-  double pushRodArmInputRange2 = -0.29;
-  double wristInputRange2 = -0.60;
+  double lowerArmInputRange2 = 1.62;
+  double pushRodArmInputRange2 = 0.89;
+  double wristInputRange2 = 1.53;
 
   double wristSetAngle = 0.0;
 
