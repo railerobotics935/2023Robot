@@ -31,7 +31,7 @@ void Robot::RobotInit() {
 void Robot::RobotPeriodic() {
   m_arm.UpdateNTE();
   m_swerve.UpdateNTE();
-  //frc2::CommandScheduler::GetInstance().Run();
+  frc2::CommandScheduler::GetInstance().Run();
 }
 
 void Robot::AutonomousInit() 
@@ -121,6 +121,9 @@ FollowPathWithEvents command(
 }
 
 void Robot::TeleopInit() {
+
+  m_autonomousCommand->Cancel();
+
   if (customArmController)
   {
     if (m_opController.GetRawAxis(1) + lowerArmTrim2 > -0.02 && m_opController.GetRawAxis(0) + pushRodArmTrim2 > -0.02)
