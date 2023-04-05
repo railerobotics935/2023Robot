@@ -2,15 +2,15 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 2.343952973620233,
-        "y": 4.680920933270438
+        "x": 1.8755223835233994,
+        "y": 4.967338139804485
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.343952973620233,
-        "y": 4.680920933270438
+        "x": 2.9146666840342226,
+        "y": 4.727535608917372
       },
-      "holonomicAngle": 0,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -24,18 +24,18 @@
     },
     {
       "anchorPoint": {
-        "x": 5.550455386625059,
-        "y": 5.625693965673646
+        "x": 4.159356011019715,
+        "y": 4.841727290292188
       },
       "prevControl": {
-        "x": 4.233499038426649,
-        "y": 5.654323451504046
+        "x": 2.8422786908634468,
+        "y": 4.861096074412134
       },
       "nextControl": {
-        "x": 6.86741173482347,
-        "y": 5.597064479843246
+        "x": 4.935859444368461,
+        "y": 4.830308122154706
       },
-      "holonomicAngle": -178.53119928561415,
+      "holonomicAngle": 180.0,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
@@ -49,37 +49,12 @@
     },
     {
       "anchorPoint": {
-        "x": 7.440001451431474,
-        "y": 3.564370985884829
+        "x": 5.472560346830096,
+        "y": 4.796050617742261
       },
       "prevControl": {
-        "x": 7.691873606181314,
-        "y": 4.189387073597395
-      },
-      "nextControl": {
-        "x": 7.053503392721071,
-        "y": 2.605283210566422
-      },
-      "holonomicAngle": 0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": true,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "minimum",
-        "waitTime": 5.0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 4.820403497949854,
-        "y": 1.1022352044704096
-      },
-      "prevControl": {
-        "x": 5.457409557676259,
-        "y": 1.1093925759280097
+        "x": 5.095727798293203,
+        "y": 4.807469785879743
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -97,11 +72,9 @@
   ],
   "markers": [
     {
-      "position": 1.5272727272727278,
+      "position": 1.0,
       "names": [
-        "Set arm to intake",
-        "intake",
-        "Set arm home"
+        "event"
       ]
     }
   ]

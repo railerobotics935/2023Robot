@@ -22,9 +22,9 @@ public:
   void UpdateNTE();
 
   void SetLowerArmMotor(double percent);
-  void SetPushRodArmMotor(double precent);
+  void SetPushRodArmMotor(double percent);
   void SetTurretMotor(double percent);
-  void SetIntakeMotor(double precent);
+  void SetIntakeMotor(double percent);
   void SetWristServo(double angle);
   void SetWristAngle(double angle);
   void SetTurretAngle(double angle);
@@ -93,7 +93,6 @@ private:
   double turretOutput = 0.0;
   double lowerArmOutput = 0.0;
   double pushRodArmOutput = 0.0;
-
 
   // Network Tables
   nt::NetworkTableEntry nte_turretAngle;

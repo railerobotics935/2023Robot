@@ -60,9 +60,9 @@ void Drivetrain::ResetGyro()
   m_gyro.Reset();
 }
 
-void Drivetrain::GetGyroAngle()
+void Drivetrain::GetPose()
 {
-
+  return {m_gyro.GetX(), m_gyro.GetY(), m_gyro.GetAngle()}
 }
 
 void Drivetrain::Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,

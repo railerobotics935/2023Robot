@@ -24,6 +24,7 @@
 #include <frc/SerialPort.h>
 #include <frc/GenericHID.h>
 #include <frc/Servo.h>
+#include <frc/controller/RamseteController.h>
 
 #include "ArmFunctions.h"
 #include "Drivetrain/Drivetrain.h"
@@ -50,10 +51,10 @@ public:
   
 private:
   // Autonomous modes
-  enum DriverStation {kStation1, kStation2, kStation3};
-  DriverStation currentDriverStation;
   enum AutoState {kScoreCube, kScoreCone, kMobility, kEngageChargeStation, kEnd};
-  AutoState currentAutoState;
+  AutoState currentAutoState = kScoreCube; // not currenlty high
+  enum PathPlannerAutoState {kScore, kDrive, KStop};
+  PathPlannerAutoState PPAutoState = kScore;
   frc::Pose2d initialPose2d;
   frc::Timer autoTimer;
 
@@ -63,6 +64,7 @@ private:
   frc::XboxController m_opController{1};
 
   // Configuration information
+  bool oldAuto = true;
   bool powerArm = true;
   bool customArmController = true;
   bool exponentialDriveControl = true;
@@ -115,6 +117,9 @@ private:
   frc::SlewRateLimiter<units::scalar> m_xspeedLimiter{2 / 1_s};
   frc::SlewRateLimiter<units::scalar> m_yspeedLimiter{2 / 1_s};
   frc::SlewRateLimiter<units::scalar> m_rotLimiter{2 / 1_s};
+
+  // Special controller for Auto
+  frc::RamseteController driveRamsete;
 
   bool fieldRelative = true;
   bool isParked = false;

@@ -46,82 +46,102 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit() 
 {
-  // Grab driverstation station number from DriverStation
-  currentDriverStation = DriverStation::kStation1;
-
   initialPose2d = m_swerve.GetPose();
   autoTimer.Reset();
   autoTimer.Start();
 }
 void Robot::AutonomousPeriodic() 
 {
-  // Switch for the Autonomous states
-  switch (currentAutoState)
-  {
-  case kMobility:
-    std::cout << "Mobility\r\n";
-    if (initialPose2d.X() < (units::length::meter_t)3.0  && autoTimer.Get() < (units::time::second_t)2.0)
+  if (oldAuto)
+  {  // Switch for the Autonomous states
+    switch (currentAutoState)
     {
-      // add something to to check if you set a game peice or not.
-      m_swerve.Drive((units::velocity::meters_per_second_t) -4.0, 
-                     (units::velocity::meters_per_second_t) -0.5, 
-                     (units::angular_velocity::radians_per_second_t)0.0, 
-                     false);
-    }
-    else
-    {
-      currentAutoState = kEnd;
-      autoTimer.Reset();
-      autoTimer.Start();
-    }
-    break;
-  case kEngageChargeStation:
-    std::cout << "Engage Charge Station\r\n";
-    // Move forward
-    if (1 == 1)
-      //nothing yet
-    break;
-  case kScoreCube:
-    std:: cout << "Score Cube";
-    if (autoTimer.Get() < (units::time::second_t)3.0)
-    {
+    case kMobility:
+      std::cout << "Mobility\r\n";
+      if (initialPose2d.X() < (units::length::meter_t)3.0  && autoTimer.Get() < (units::time::second_t)2.0)
+      {
+        // add something to to check if you set a game peice or not.
+        m_swerve.Drive((units::velocity::meters_per_second_t) -4.0, 
+                      (units::velocity::meters_per_second_t) -0.5, 
+                      (units::angular_velocity::radians_per_second_t)0.0, 
+                      false);
+      }
+      else
+      {
+        currentAutoState = kEnd;
+        autoTimer.Reset();
+        autoTimer.Start();
+      }
+      break;
+    case kEngageChargeStation:
+      std::cout << "Engage Charge Station\r\n";
+      // Move forward
+      if (1 == 1)
+        //nothing yet
+      break;
+    case kScoreCube:
+      std:: cout << "Score Cube";
+      if (autoTimer.Get() < (units::time::second_t)3.0)
+      {
+        m_arm.SetWristServo(0.0);
+        if (autoTimer.Get() > (units::time::second_t)2.0)
+          m_arm.SetIntakeMotor(-1.0);
+      }
+      else
+      {
+        currentAutoState = kEnd;
+        autoTimer.Reset();
+        autoTimer.Start();
+      }
+      break;
+    case kScoreCone:
+      std::cout << "Score Cone";
+      if (autoTimer.Get() < (units::time::second_t)3.0)
+        // Something
+    case kEnd:
+      std::cout << "End\r\n";
       m_arm.SetWristServo(0.0);
-      if (autoTimer.Get() > (units::time::second_t)2.0)
-        m_arm.SetIntakeMotor(-1.0);
+      m_swerve.Park();
+      break;
+    
+    default:
+      m_swerve.Park();
+      std::cout << "Something went wrong...\r\n";
+      break;
     }
-    else
-    {
-      currentAutoState = kEnd;
-      autoTimer.Reset();
-      autoTimer.Start();
-    }
-    break;
-  case kEnd:
-    std::cout << "End\r\n";
-    m_arm.SetWristServo(0.0);
-    m_swerve.Park();
-    break;
-  
-  default:
-    m_swerve.Park();
-    std::cout << "Something went wrong...\r\n";
-    break;
   }
-  frc2::CommandScheduler::GetInstance().Run();
-  
-// This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
-PathPlannerTrajectory examplePath = PathPlanner::loadPath("Test Drive Forward", PathConstraints((units::meters_per_second_t)4,(units::meters_per_second_squared_t)3));
+  else
+  {
+    // simple path planner auto
+    // This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+    PathPlannerTrajectory examplePath = PathPlanner::loadPath("Test Drive Forward", PathConstraints((units::meters_per_second_t)4,(units::meters_per_second_squared_t)3));
 
-// This is just an example event map. It would be better to have a constant, global event map
-// in your code that will be used by all path following commands.
-std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap;
-eventMap.emplace("marker1", std::make_shared<frc2::PrintCommand>("Passed marker 1"));
-/*
-FollowPathWithEvents command(
-    getPathFollowingCommand(examplePath),
-    examplePath.getMarkers(),
-    eventMap);
-*/
+    switch (PPAutoState)
+    {
+    case kScore:
+      if (autoTimer.Get() < (units::time::second_t)3.0)
+        m_arm.SetArmForHighCone();
+      else if (autoTimer.Get() < (units::time::second_t)3.5)
+        m_arm.SetIntakeMotor(-0.15);
+      else
+      {
+        m_arm.SetArmToHome();
+        autoTimer.Reset();
+        autoTimer.Start();
+        PPAutoState = kDrive;
+      } 
+      break;
+    case kDrive:
+      PathPlannerTrajectory::PathPlannerState state = examplePath.sample(autoTimer.Get()); 
+      //driveRamsete.Calculate(m_swerve.GetPose(), examplePath.gett);
+
+      break;
+    default:
+      m_swerve.Park();
+      std::cout << "Something went wrong...\r\n";
+      break;
+    }
+  }
 }
 
 void Robot::TeleopInit() {
@@ -269,7 +289,7 @@ void Robot::TeleopPeriodic() {
     m_arm.SetIntakeMotor(-1.0);
   else
     m_arm.SetIntakeMotor(0.0);
-  
+  a
   if (m_opController.GetRawButtonPressed(5))
     wristSetAngle = (wristSetAngle - 0.2);
   if (m_opController.GetRawButtonPressed(6))

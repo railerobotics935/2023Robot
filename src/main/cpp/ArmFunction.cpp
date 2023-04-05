@@ -95,21 +95,21 @@ void ArmFunctions::SetTurretMotor(double percent)
 }
 
 // Positive values rotates the arm ccw
-void ArmFunctions::SetLowerArmMotor(double precent)
+void ArmFunctions::SetLowerArmMotor(double percent)
 {
-  lowerArmMotor.Set(precent);
+  lowerArmMotor.Set(percent);
 }
 
 // Positive values rotates the arm cw
-void ArmFunctions::SetPushRodArmMotor(double precent)
+void ArmFunctions::SetPushRodArmMotor(double percent)
 {
-  pushRodArmMotor.Set(precent);
+  pushRodArmMotor.Set(percent);
 }
 
 // Sets power to motor
-void ArmFunctions::SetIntakeMotor(double precent) 
+void ArmFunctions::SetIntakeMotor(double percent) 
 {
-  intakeMotor.Set(precent);
+  intakeMotor.Set(percent);
 }
 
 // Sets wrist angle reletive to the push rod arm
@@ -260,9 +260,10 @@ void ArmFunctions::SetArmForMidCone()
 
 void ArmFunctions::SetArmForHighCone()
 {
-  SetLowerArmAngle(0.0);
-  SetPushRodArmRawAngle(0.0);
-  SetWristServo(0.0);
+  // who knows...
+  SetLowerArmAngle(0.0); // max
+  SetPushRodArmRawAngle(0.0); // max
+  SetWristServo(0.0); // horizontal to upish
 }
 
 void ArmFunctions::SetArmForFloorCubeIntake()
