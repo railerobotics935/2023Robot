@@ -63,8 +63,8 @@ private:
   frc::XboxController m_opController{1};
 
   // Configuration information
-  bool setpointController = true;
-  bool customArmController = false;
+  bool powerArm = true;
+  bool customArmController = true;
   bool exponentialDriveControl = true;
 
   bool controllerStartedNeutral = false;
@@ -88,7 +88,7 @@ private:
   double workingPushRodArmRange = 2.0;
 
   // TEMPORARY FIX!!! COME BACK TO FIX
-  double totalWristRange = std::numbers::pi * 2; // 270 ish degrees
+  double totalWristRange = std::numbers::pi; // 270 ish degrees
 
   // Oporator joystick trim adjustment
   double turretTrim = 0.14;
@@ -102,7 +102,7 @@ private:
   double wristTrim2 = -0.05;
 
   // Maximun range input for the 
-  double lowerArmInputRange2 = 1.62;
+  double lowerArmInputRange2 = 0.88;
   double pushRodArmInputRange2 = 0.89;
   double wristInputRange2 = 1.53;
 

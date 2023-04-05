@@ -15,6 +15,11 @@ ArmFunctions::ArmFunctions()
   lowerArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
   pushRodArmMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kCoast);
   intakeMotor.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  intakeFollower.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
+  intakeFollower.Follow(intakeMotor, true);
+
+  //intakeMotor.SetSmartCurrentLimit();
+
 }
 
 // Updates Netowrk table entries, needs to be called every cycle for acurrate values
@@ -102,9 +107,8 @@ void ArmFunctions::SetPushRodArmMotor(double precent)
 }
 
 // Sets power to motor
-void ArmFunctions::SetIntakeMotor(double precent)
+void ArmFunctions::SetIntakeMotor(double precent) 
 {
-  std::cout << "Setting intake Output\r\n";
   intakeMotor.Set(precent);
 }
 

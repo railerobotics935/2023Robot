@@ -127,7 +127,7 @@ FollowPathWithEvents command(
 void Robot::TeleopInit() {
   if (customArmController)
   {
-    if (m_opController.GetRawAxis(1) + lowerArmTrim2 > -0.02 && m_opController.GetRawAxis(0) + pushRodArmTrim2 > -0.02)
+    if (m_opController.GetRawAxis(0) - lowerArmTrim2 > -0.02 && m_opController.GetRawAxis(1) - pushRodArmTrim2 > -0.02)
       controllerStartedNeutral = true;
     else
       controllerStartedNeutral = false;
@@ -140,6 +140,7 @@ void Robot::TeleopInit() {
       controllerStartedNeutral = false;
   }
 }
+
 void Robot::TeleopPeriodic() {
   
   // Drive
@@ -175,18 +176,15 @@ void Robot::TeleopPeriodic() {
     m_swerve.ResetGyro();
 
   // Deafult is to run on setpoint control
-  if (setpointController)
+  if (powerArm)
   {
     if (customArmController)
     {
-      // Turret Control
-      m_arm.SetTurretAngle(0.0);
-
       if (controllerStartedNeutral)
       {
         // Joystick to angle conversion axis 2 is lower arm. axis one is push rod arm
-        lowerArmSetpointAngle =  ((m_opController.GetRawAxis(1) + lowerArmTrim2) / lowerArmInputRange2) * workingLowerArmRange;
-        pushRodArmSetpointAngle = -((((m_opController.GetRawAxis(0) + pushRodArmTrim2) / pushRodArmInputRange2) * workingPushRodArmRange) - std::numbers::pi);
+        lowerArmSetpointAngle =  ((m_opController.GetRawAxis(0) - lowerArmTrim2) / lowerArmInputRange2) * workingLowerArmRange;
+        pushRodArmSetpointAngle = -((((m_opController.GetRawAxis(1) - pushRodArmTrim2) / pushRodArmInputRange2) * workingPushRodArmRange) - std::numbers::pi);
         m_arm.SetLowerArmAngle(lowerArmSetpointAngle);
         m_arm.SetPushRodArmRawAngle(pushRodArmSetpointAngle);
         nte_lowerArmSetpointAngle.SetDouble(lowerArmSetpointAngle);
@@ -196,13 +194,13 @@ void Robot::TeleopPeriodic() {
       {
         m_arm.SetLowerArmAngle(0.0);
         m_arm.SetPushRodArmRawAngle(3.1);
-        if (m_opController.GetRawAxis(1) + lowerArmTrim2 > -0.02 && m_opController.GetRawAxis(0) + pushRodArmTrim2 > -0.02)
+        if (m_opController.GetRawAxis(0) - lowerArmTrim2 > -0.02 && m_opController.GetRawAxis(1) - pushRodArmTrim2 > -0.02)
           controllerStartedNeutral = true;
         std::cout << "Set Joystick to Zero!\r\n";
       }
       
       // Turret Control
-      wristSetAngle = ((-(m_opController.GetRawAxis(3) + wristTrim2)/wristInputRange2) * totalWristRange / 2);
+      wristSetAngle = ((-(m_opController.GetRawAxis(2) - wristTrim2)/wristInputRange2) * totalWristRange / 2);
  //     if (wristSetAngle > std::numbers::pi/2)
  //       wristSetAngle = std::numbers::pi/2;
  //     if (wristSetAngle < -std::numbers::pi/2)
@@ -211,19 +209,17 @@ void Robot::TeleopPeriodic() {
       nte_wirstSetpointAngle.SetDouble(wristSetAngle);
 
       // Intake controll
-      if (m_opController.GetRawButton(9))
+      if (m_opController.GetRawButton(1))
       {
-        m_arm.SetIntakeMotor(1.0);
+        m_arm.SetIntakeMotor(0.15);
       }
-      else if (m_opController.GetRawButton(10))
-        m_arm.SetIntakeMotor(-1.0);
+      else if (m_opController.GetRawButton(2))
+        m_arm.SetIntakeMotor(-0.15);
       else
         m_arm.SetIntakeMotor(0.0);
     }
     else
     {
-      m_arm.SetTurretMotor(m_opController.GetRawAxis(4));
-
       if (controllerStartedNeutral)
       {
         // Joystick to angle conversion axis 2 is lower arm. axis one is push rod arm
@@ -265,11 +261,7 @@ void Robot::TeleopPeriodic() {
   }
   else
   {
-  // Arm Control
-  m_arm.SetTurretMotor(m_opController.GetRawAxis(0));
-  m_arm.SetLowerArmMotor(0.3 * m_opController.GetRawAxis(1));
-  //m_arm.SetPushRodArmMotor(0.3 * m_opController.GetRawAxis(3));
-
+  /*
   // Intake is button 8??????
   if (m_opController.GetRawButton(7))
     m_arm.SetIntakeMotor(1.0);
@@ -283,6 +275,8 @@ void Robot::TeleopPeriodic() {
   if (m_opController.GetRawButtonPressed(6))
     wristSetAngle = (wristSetAngle + 0.2);
   m_arm.SetWristServo(wristSetAngle);
+
+  */
   }
 }
 
@@ -338,8 +332,6 @@ void Robot::DriveWithJoystick(bool fieldRelative, bool slowMode) {
   // mathematics). Xbox coive values when you pull to
   // the right by default.
   const auto rot = -m_rotLimiter.Calculate(frc::ApplyDeadband(m_driveController.GetRawAxis(0), 0.07)) * Drivetrain::kMaxAngularSpeed;
-
-  std::cout << "X Speed: " << (double)xSpeed << "\r\n";
 
   m_swerve.Drive(xSpeed, ySpeed, rot, fieldRelative);
 }
