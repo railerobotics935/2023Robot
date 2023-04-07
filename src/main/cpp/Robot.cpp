@@ -61,6 +61,9 @@ void Robot::AutonomousPeriodic()
 }
 
 void Robot::TeleopInit() {
+
+  m_autonomousCommand->Cancel();
+
   if (customArmController)
   {
     if (m_opController.GetRawAxis(1) + lowerArmTrim2 > -0.02 && m_opController.GetRawAxis(0) + pushRodArmTrim2 > -0.02)

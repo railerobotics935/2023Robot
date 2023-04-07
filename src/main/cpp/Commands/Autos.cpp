@@ -7,6 +7,5 @@
 #include "Commands/TestCommand.h"
 
 frc2::CommandPtr autos::TestAuto(Drivetrain* drivetrain) {
-  return frc2::cmd::Sequence(drivetrain->TestMethodCommand(),
-                             TestCommand(drivetrain).ToPtr());
+  return frc2::cmd::Sequence(drivetrain->TestMethodCommand());
 }
