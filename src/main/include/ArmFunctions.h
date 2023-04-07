@@ -58,16 +58,16 @@ private:
   // measured offsets DON'T TOUCH
   double turretEncoderOffset = -0.972;
   double lowerArmEncoderOffset = 2.00 + (0.5 * std::numbers::pi); // measured at pi/2
-  double pushRodArmEcoderOffset = 3.428 + (0.5 * std::numbers::pi); // measured at pi/2
+  double pushRodArmEcoderOffset = 4.83 + (0.5 * std::numbers::pi); // measured at pi/2
   double wristServoOffset = 0.46;
 
   // Arm Limits. the push rod arm is using the raw angle
   double lowerArmLimit = 1.7;
-  double pushRodArmLimit = 0.85;
-  double turretLimit = (4 * std::numbers::pi / 180.0);
+  double pushRodArmLimit = 1.15;
+  double turretLimit = (2 * std::numbers::pi / 180.0);
   double wristServoRange = (std::numbers::pi * 3) / 2;
-  double idleLowerArmThreshold = 0.119;
-  double idlePushRodArmThreshold = 3.0415;
+  double idleLowerArmThreshold = 0.19;
+  double idlePushRodArmThreshold = 2.96;
   bool lowerArmIdleMode = true;
   bool pushRodArmIdleMode = true;
 
@@ -81,12 +81,13 @@ private:
   rev::CANSparkMax lowerArmMotor{13, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax pushRodArmMotor{17, rev::CANSparkMax::MotorType::kBrushless};
   rev::CANSparkMax turretMotor{14, rev::CANSparkMax::MotorType::kBrushed};
-  rev::CANSparkMax intakeMotor{15, rev::CANSparkMax::MotorType::kBrushed};
-
+  rev::CANSparkMax intakeMotor{5, rev::CANSparkMax::MotorType::kBrushless};
+  rev::CANSparkMax intakeFollower{6, rev::CANSparkMax::MotorType::kBrushless};
+  
   // PID controllers for the arm
   frc2::PIDController turretPID{15.0, 0.0, 0.0};
-  frc2::PIDController lowerArmPID{10.0, 5.0, 1.0};
-  frc2::PIDController pushRodArmPID{35.0, 15.0, 0.5};
+  frc2::PIDController lowerArmPID{25.0, 10.0, 1.0};
+  frc2::PIDController pushRodArmPID{35.0, 15.0, 1.5};
 
   double turretOutput = 0.0;
   double lowerArmOutput = 0.0;

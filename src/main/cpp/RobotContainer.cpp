@@ -14,57 +14,65 @@
 #include <units/angle.h>
 #include <units/velocity.h>
 
-#include "Commands/Autos.h"
-#include "Commands/TestCommand.h"
+#include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/commands/PPSwerveControllerCommand.h>
+#include <frc2/command/Command.h>
+#include <frc2/command/CommandPtr.h>
+#include <frc2/command/RunCommand.h>
 
-RobotContainer::RobotContainer() {}
+using namespace pathplanner;
+
+RobotContainer::RobotContainer() {
+  m_chooser.AddOption("Test Drive Forward", "TestDriveForward");
+  m_chooser.AddOption("Test Balance", "TestBalance");
+}
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  /*  // Command for Auto
-  // Set up config for trajectory
-  frc::TrajectoryConfig config((units::meters_per_second)1.0,
-                               (units::meters_per_second_squared)1.0);
-  // Add kinematics to ensure max speed is actually obeyed
-  config.SetKinematics(m_drive.kDriveKinematics);
+  std::string autoPathName = m_chooser.GetSelected();
+  // This will load the file "Example Path.path" and generate it with a max velocity of 4 m/s and a max acceleration of 3 m/s^2
+  PathPlannerTrajectory examplePath = PathPlanner::loadPath(autoPathName, PathConstraints((units::meters_per_second_t)4,(units::meters_per_second_squared_t)3));
 
-  // An example trajectory to follow.  All units in meters.
-  auto exampleTrajectory = frc::TrajectoryGenerator::GenerateTrajectory(
-      // Start at the origin facing the +X direction
-      frc::Pose2d{0_m, 0_m, 0_deg},
-      // Pass through these two interior waypoints, making an 's' curve path
-      {frc::Translation2d{1_m, 1_m}, frc::Translation2d{2_m, -1_m}},
-      // End 3 meters straight ahead of where we started, facing forward
-      frc::Pose2d{3_m, 0_m, 0_deg},
-      // Pass the config
-      config);
-
-  frc::ProfiledPIDController<units::radians> thetaController{
-      AutoConstants::kPThetaController, 0, 0,
-      AutoConstants::kThetaControllerConstraints};
-
-  thetaController.EnableContinuousInput(units::radian_t{-std::numbers::pi},
-                                        units::radian_t{std::numbers::pi});
-
-  frc2::SwerveControllerCommand<4> swerveControllerCommand(
-      exampleTrajectory, [this]() { return m_drive.GetPose(); },
-
-      m_drive.kDriveKinematics,
-
-      frc2::PIDController{AutoConstants::kPXController, 0, 0},
-      frc2::PIDController{AutoConstants::kPYController, 0, 0}, thetaController,
-
-      [this](auto moduleStates) { m_drive.SetModuleStates(moduleStates); },
-
-      {&m_drive});
+  frc2::CommandPtr swerveCommand{PPSwerveControllerCommand(
+    examplePath,
+    [this] () -> frc::Pose2d { return m_drivetrain.GetPose(); },
+    m_drivetrain.m_kinematics,
+    frc2::PIDController{XController},
+    frc2::PIDController{YController},
+    frc2::PIDController{RotController},
+    [this] (std::array<frc::SwerveModuleState, 4U> states) { m_drivetrain.SetModuleStates(states); },
+    {&m_drivetrain},
+    true
+  )};
 
   // Reset odometry to the starting pose of the trajectory.
-  m_drive.ResetOdometry(exampleTrajectory.InitialPose());
+  m_drivetrain.ResetOdometry(examplePath.getInitialPose());
 
   // no auto
-  return new frc2::SequentialCommandGroup(
-      std::move(swerveControllerCommand),
-      frc2::InstantCommand(
-          [this]() { m_drive.Drive(0_mps, 0_mps, 0_rad_per_s, false); }, {}));
-*/
-    return autos::TestAuto(&m_drivetrain);
+  return std::move(swerveCommand)
+          .BeforeStarting([this]() { m_drivetrain.Drive(0_mps, 0_mps, 0_rad_per_s, false); }, {});
+}
+
+// Helper funtions to get to the drivetrain.
+void RobotContainer::Swerve_Drive(units::meters_per_second_t xSpeed, 
+                                  units::meters_per_second_t ySpeed, 
+                                  units::radians_per_second_t rotSpeed, 
+                                  bool fieldRelative)
+{
+  m_drivetrain.Drive(xSpeed, ySpeed, rotSpeed, fieldRelative);
+}
+
+void RobotContainer::Swerve_UpdateNTE()
+{
+  m_drivetrain.UpdateNTE();
+}
+
+void RobotContainer::Swerve_Park()
+{
+  m_drivetrain.Park();
+}
+
+void RobotContainer::Swerve_ZeroHeading() 
+{
+  m_drivetrain.ZeroHeading();
 }

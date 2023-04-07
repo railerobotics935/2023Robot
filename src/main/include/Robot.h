@@ -54,10 +54,10 @@ public:
   
 private:
   // Autonomous modes
-  enum DriverStation {kStation1, kStation2, kStation3};
-  DriverStation currentDriverStation;
   enum AutoState {kScoreCube, kScoreCone, kMobility, kEngageChargeStation, kEnd};
-  AutoState currentAutoState;
+  AutoState currentAutoState = kScoreCube; // not currenlty high
+  enum PathPlannerAutoState {kScore, kDrive, kStop};
+  PathPlannerAutoState PPAutoState = kScore;
   frc::Pose2d initialPose2d;
   frc::Timer autoTimer;
 
@@ -67,14 +67,14 @@ private:
   frc::XboxController m_opController{1};
 
   // Configuration information
-  bool setpointController = true;
-  bool customArmController = false;
+  bool commandAuto = false;
+  bool powerArm = true;
+  bool customArmController = true;
   bool exponentialDriveControl = true;
+
 
   bool controllerStartedNeutral = false;
 
-  // Servedrive and arm objects
-  Drivetrain m_swerve;
   ArmFunctions m_arm;
 
   // Drive variables
@@ -92,7 +92,7 @@ private:
   double workingPushRodArmRange = 2.0;
 
   // TEMPORARY FIX!!! COME BACK TO FIX
-  double totalWristRange = std::numbers::pi * 2; // 270 ish degrees
+  double totalWristRange = std::numbers::pi; // 270 ish degrees
 
   // Oporator joystick trim adjustment
   double turretTrim = 0.14;
@@ -100,15 +100,15 @@ private:
   double pushRodArmTrim = -0.81;
   double wristTrim = 0.13;
 
-  // Oporator joystick trim adjustment for the custom arm controller
-  double lowerArmTrim2 = 0.0;
-  double pushRodArmTrim2 = 0.0;
-  double wristTrim2 = 0.70;
+  // Maximun range input for the 
+  double lowerArmTrim2 = -0.25;
+  double pushRodArmTrim2 = 0.07;
+  double wristTrim2 = -0.05;
 
   // Maximun range input for the 
-  double lowerArmInputRange2 = -0.35;
-  double pushRodArmInputRange2 = -0.29;
-  double wristInputRange2 = -0.60;
+  double lowerArmInputRange2 = 0.88;
+  double pushRodArmInputRange2 = 0.89;
+  double wristInputRange2 = 1.53;
 
   double wristSetAngle = 0.0;
 
