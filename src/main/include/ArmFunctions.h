@@ -12,10 +12,12 @@
 #include <frc/AnalogPotentiometer.h>
 #include <frc/Servo.h>
 #include <frc/controller/PIDController.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/SubsystemBase.h>
+#include <frc2/command/CommandPtr.h>
 #include "ctre/phoenix.h"
 
-class ArmFunctions
-{
+class ArmFunctions : public frc2::SubsystemBase {
 public:
   ArmFunctions();
   void UpdateNTE();
@@ -32,10 +34,15 @@ public:
   void SetPushRodArmRawAngle(double angle);
 
   void SetArmToHome();
-  void SetArmForMidCone();
-  void SetArmForHighCone();
-  void SetArmForFloorCubeIntake();
+  void SetArmForMid();
+  void SetArmForHigh();
+  void SetArmForCubeIntake();
   void SetArmForConeDrop();
+
+  frc2::CommandPtr SetArmToHomeCommand();
+  frc2::CommandPtr SetArmForMidCommand();
+  frc2::CommandPtr SetArmForHighCommand();
+  frc2::CommandPtr SetArmForCubeIntakeCommand();
 
   double GetPushRodArmEncoder();
   double GetWristServoSensor();
@@ -86,7 +93,7 @@ private:
   
   // PID controllers for the arm
   frc2::PIDController turretPID{15.0, 0.0, 0.0};
-  frc2::PIDController lowerArmPID{25.0, 10.0, 1.0};
+  frc2::PIDController lowerArmPID{25.0, 10.0, 1.0}; // Try smaller pid values for slower arm movement
   frc2::PIDController pushRodArmPID{35.0, 15.0, 1.5};
 
   double turretOutput = 0.0;

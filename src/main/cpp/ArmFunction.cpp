@@ -150,6 +150,8 @@ void ArmFunctions::SetTurretAngle(double angle)
 // Sets lower arm position
 void ArmFunctions::SetLowerArmAngle(double angle)
 {
+  frc::SmartDashboard::PutData(&lowerArmPID);
+
   // Double check the angle is ok
   if (GetLowerArmAngle() > lowerArmLimit)
   {
@@ -187,6 +189,8 @@ void ArmFunctions::SetLowerArmAngle(double angle)
 // Sets push rod arm position
 void ArmFunctions::SetPushRodArmRawAngle(double angle)
 {
+    frc::SmartDashboard::PutData(&pushRodArmPID);
+
   // Double check the angle is ok
   if (GetPushRodArmEncoder() < pushRodArmLimit)
   {
@@ -251,14 +255,14 @@ void ArmFunctions::SetArmToHome()
   SetWristServo(0.75);
 }
 
-void ArmFunctions::SetArmForMidCone()
+void ArmFunctions::SetArmForMid()
 {
   SetLowerArmAngle(1.336);
   SetPushRodArmRawAngle(1.877);
   SetWristServo(0.0); // Horizontal
 }
 
-void ArmFunctions::SetArmForHighCone()
+void ArmFunctions::SetArmForHigh()
 {
   // who knows...
   SetLowerArmAngle(1.8); // max
@@ -266,7 +270,7 @@ void ArmFunctions::SetArmForHighCone()
   SetWristServo(0.0); // horizontal to upish
 }
 
-void ArmFunctions::SetArmForFloorCubeIntake()
+void ArmFunctions::SetArmForCubeIntake()
 {
   SetLowerArmAngle(0.811);
   SetPushRodArmRawAngle(3.013);
@@ -278,4 +282,25 @@ void ArmFunctions::SetArmForConeDrop()
   SetLowerArmAngle(0.0);
   SetPushRodArmRawAngle(0.0);
   SetWristServo(0.0);
+}
+
+// All are preset positions for the arm
+frc2::CommandPtr ArmFunctions::SetArmToHomeCommand()
+{
+  return RunOnce([this] () {SetArmToHome();});
+}
+
+frc2::CommandPtr ArmFunctions::SetArmForMidCommand()
+{
+  return RunOnce([this] () {SetArmForMid();});
+}
+
+frc2::CommandPtr ArmFunctions::SetArmForHighCommand()
+{
+  return RunOnce([this] () {SetArmForHigh();});
+}
+
+frc2::CommandPtr ArmFunctions::SetArmForCubeIntakeCommand()
+{
+  return RunOnce([this] () {SetArmForCubeIntake();});
 }

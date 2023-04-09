@@ -15,6 +15,7 @@
 #include <frc2/command/CommandScheduler.h>
 
 #include <pathplanner/lib/PathPlanner.h>
+#include <pathplanner/lib/commands/FollowPathWithEvents.h>
 #include "Robot.h"
 #include "ArmFunctions.h"
 
@@ -42,22 +43,14 @@ void Robot::AutonomousInit()
   autoTimer.Start();
 
   m_autonomousCommand = m_container.GetAutonomousCommand();
-
   if (m_autonomousCommand) {
     m_autonomousCommand->Schedule();
   }
 }
+
 void Robot::AutonomousPeriodic() 
 {
-  // Switch for the Autonomous states
-  if (commandAuto)
-  {
-  
-  }
-  else
-  {
 
-  }
 }
 
 void Robot::TeleopInit() {
@@ -80,7 +73,6 @@ void Robot::TeleopInit() {
   }
 }
 void Robot::TeleopPeriodic() {
-  
   // Drive
   if (isParked)
   {

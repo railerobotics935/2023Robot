@@ -59,8 +59,6 @@ void SwerveModule::SetDesiredState(const frc::SwerveModuleState& referenceState)
   const auto turnOutput = m_turningPIDController.Calculate(
       units::radian_t(((m_turningEncoder.GetVoltage() * ANALOG_TO_RAD_FACTOR) - kTurningEncoderOffset) - std::numbers::pi), state.angle.Radians());
 
-  const auto turnFeedforward = m_turnFeedforward.Calculate(m_turningPIDController.GetSetpoint().velocity);
-
   // Set the motor outputs, cut off at very low intended speed
   if (fabs(state.speed.value()) > 0.02)
     m_driveMotor.SetVoltage(units::volt_t{driveOutput} + driveFeedforward);

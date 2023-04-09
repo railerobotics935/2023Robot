@@ -7,6 +7,7 @@
 #include <frc2/command/RunCommand.h>
 
 #include "Drivetrain/Drivetrain.h"
+#include "ArmFunctions.h"
 
 class RobotContainer {
  public:
@@ -21,10 +22,12 @@ class RobotContainer {
   void Swerve_Park();
   void Swerve_SetModuleStates();
   void Swerve_ZeroHeading();
-  private:
+  
   // The robot's subsystems
   Drivetrain m_drivetrain;
+  ArmFunctions m_arm;
 
+  private:
   // The chooser for the autonomous routines
   frc::SendableChooser<std::string> m_chooser;
   
@@ -33,7 +36,6 @@ class RobotContainer {
   frc2::PIDController XController{1.0, 0.0, 0.0};
   frc2::PIDController YController{1.0, 0.0, 0.0};
   frc2::PIDController RotController{1.0, 0.0, 0.0};
-  
 };
 
 

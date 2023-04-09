@@ -34,7 +34,6 @@ public:
   double GetEncoderVoltage();
   void SetDesiredState(const frc::SwerveModuleState& state);
 
-
 private:
   static constexpr double ANALOG_TO_RAD_FACTOR = 1.2566;     // 0 to 5.0 volt = 2PI rad
 
@@ -60,5 +59,4 @@ private:
       {kModuleMaxAngularVelocity, kModuleMaxAngularAcceleration}};
 
   frc::SimpleMotorFeedforward<units::meters> m_driveFeedforward{0.5_V, 1_V / 1_mps};
-  frc::SimpleMotorFeedforward<units::radians> m_turnFeedforward{0.5_V, 0.5_V / 1_rad_per_s};
 };

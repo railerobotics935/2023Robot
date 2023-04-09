@@ -29,7 +29,6 @@ public:
   Drivetrain();
 
 //  void ResetOdometry(const frc::Pose2d& pose);
-  void Periodic() override;
 
   void Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
               units::radians_per_second_t rot, bool fieldRelative);
@@ -67,8 +66,8 @@ public:
       frc::Translation2d{-kWheelBase / 2, kTrackWidth / 2},
       frc::Translation2d{-kWheelBase / 2, -kTrackWidth / 2}};
 
-  static constexpr units::meters_per_second_t kMaxSpeed = 9.0_mps;  // 12 meters per second??
-  static constexpr units::radians_per_second_t kMaxAngularSpeed{3 * std::numbers::pi};  // 3 rotations per second??
+  static constexpr units::meters_per_second_t kMaxSpeed = 10.0_mps;  // 12 meters per second??
+  static constexpr units::radians_per_second_t kMaxAngularSpeed{5 * std::numbers::pi};  // 3 rotations per second??
 
   static constexpr double deg_to_rad = 0.0174532;
 

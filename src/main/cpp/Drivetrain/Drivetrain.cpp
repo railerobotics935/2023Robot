@@ -37,12 +37,6 @@ Drivetrain::Drivetrain(){
   nte_robot_y = nt_table->GetEntry("Swerve Drive/Robot Y");
 }
 
-void Drivetrain::Periodic() {
-  // Implementation of subsystem periodic method goes here.
-  m_odometry.Update(GetHeading(),
-                    {m_frontLeft.GetPosition(), m_frontRight.GetPosition(),
-                    m_backLeft.GetPosition(), m_backRight.GetPosition()});
-}
 
 void Drivetrain::Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
                        units::radians_per_second_t rot, bool fieldRelative)
