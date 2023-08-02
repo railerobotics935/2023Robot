@@ -59,12 +59,12 @@ void Drivetrain::ResetGyro()
 {
   m_gyro.Reset();
 }
-
-void Drivetrain::GetPose()
-{
-  return {m_gyro.GetX(), m_gyro.GetY(), m_gyro.GetAngle()}
-}
-
+/* 
+  const frc::Pose2d& Drivetrain::GetPose()
+  {
+    return {m_gyro.GetX(), m_gyro.GetY(), m_gyro.GetAngle()};
+  }
+*/ 
 void Drivetrain::Drive(units::meters_per_second_t xSpeed, units::meters_per_second_t ySpeed,
                        units::radians_per_second_t rot, bool fieldRelative)
 {
