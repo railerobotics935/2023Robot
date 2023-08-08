@@ -2,10 +2,15 @@
 #pragma once
 
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/CommandBase.h>
+#include <frc2/command/CommandHelper.h>
 
 #include "Drivetrain/Drivetrain.h"
 #include "ArmFunctions.h"
 
+//#define ARM_COMMANDS
+
+#ifdef ARM_COMMANDS
 namespace ArmCommands {
 /**
  * Example static factory for an autonomous command.
@@ -114,3 +119,4 @@ class SetIntakeOff
   ArmFunctions* m_arm;
 };
 }
+#endif

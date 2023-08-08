@@ -51,7 +51,7 @@ public:
   void GetGyroAngle();
   void ResetGyro();
 
-  frc2::CommandPtr TestMethodCommand();
+  //frc2::CommandPtr TestMethodCommand();
 
   // Righthand rule coordinate system: X positive to front, Y positive to left
   // Dimentions of the center of the wheeles - 53cm by 72cm

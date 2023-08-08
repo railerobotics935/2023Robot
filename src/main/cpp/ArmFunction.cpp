@@ -284,23 +284,23 @@ void ArmFunctions::SetArmForConeDrop()
   SetWristServo(0.0);
 }
 
-// All are preset positions for the arm
-frc2::CommandPtr ArmFunctions::SetArmToHomeCommand()
-{
-  return RunOnce([this] () {SetArmToHome();});
-}
-
-frc2::CommandPtr ArmFunctions::SetArmForMidCommand()
-{
-  return RunOnce([this] () {SetArmForMid();});
-}
-
-frc2::CommandPtr ArmFunctions::SetArmForHighCommand()
-{
-  return RunOnce([this] () {SetArmForHigh();});
-}
-
-frc2::CommandPtr ArmFunctions::SetArmForCubeIntakeCommand()
-{
-  return RunOnce([this] () {SetArmForCubeIntake();});
-}
+//// All are preset positions for the arm
+//frc2::CommandPtr ArmFunctions::SetArmToHomeCommand()
+//{
+//  return RunOnce([this] () {SetArmToHome();});
+//}
+//
+//frc2::CommandPtr ArmFunctions::SetArmForMidCommand()
+//{
+//  return RunOnce([this] () {SetArmForMid();});
+//}
+//
+//frc2::CommandPtr ArmFunctions::SetArmForHighCommand()
+//{
+//  return RunOnce([this] () {SetArmForHigh();});
+//}
+//
+//frc2::CommandPtr ArmFunctions::SetArmForCubeIntakeCommand()
+//{
+//  return RunOnce([this] () {SetArmForCubeIntake();});
+//}

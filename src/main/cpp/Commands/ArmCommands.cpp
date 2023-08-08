@@ -4,6 +4,7 @@
 
 #include <frc2/command/Commands.h>
 
+#ifdef ARM_COMMANDS
 // Returns the command from arm functions for Auto
 Arm::SetArmToHome::SetArmToHome(ArmFunctions* arm)
     : m_arm{arm} {
@@ -53,3 +54,5 @@ Arm::SetIntakeOff::SetIntakeOff(ArmFunctions* arm)
 
   m_arm->SetIntakeMotor(0.0);   
 }
+
+#endif

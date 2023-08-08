@@ -15,6 +15,7 @@
 #include <units/velocity.h>
 
 #include <pathplanner/lib/PathPlannerTrajectory.h>
+#include <pathplanner/lib/auto/SwerveAutoBuilder.h>
 #include <pathplanner/lib/PathPlanner.h>
 #include <pathplanner/lib/commands/FollowPathWithEvents.h>
 #include <pathplanner/lib/commands/PPSwerveControllerCommand.h>
@@ -55,6 +56,7 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand()
 
   // This is just an example event map. It would be better to have a constant, global event map
   // in your code that will be used by all path following commands.
+  #ifdef ARM_COMMANDS
   std::unordered_map<std::string, std::shared_ptr<frc2::Command>> eventMap;
   eventMap.emplace("ArmToHome", std::make_shared<Arm::SetArmToHome>(m_arm));
   eventMap.emplace("IntakeCube", std::make_shared<Arm::SetArmToHome>(m_arm));
@@ -62,13 +64,14 @@ frc2::CommandPtr RobotContainer::GetAutonomousCommand()
   eventMap.emplace("ArmToHigh", std::make_shared<Arm::SetArmForHigh>(m_arm));
   eventMap.emplace("Intake", std::make_shared<Arm::SetIntakeToIntake>(m_arm));
   eventMap.emplace("Outake", std::make_shared<Arm::SetIntakeToOuttake>(m_arm));
-
-  FollowPathWithEvents FollowCommand(swerveCommand,
+  /*  FollowPathWithEvents FollowCommand(swerveCommand,
     autoPath.getMarkers(),
     eventMap);
+  */
+  #endif
 
   // no auto
-  return std::move(FollowCommand)
+  return std::move(swerveCommand)
       .BeforeStarting([this]()
                       { m_drivetrain.Drive(0_mps, 0_mps, 0_rad_per_s, false); },
                       {});

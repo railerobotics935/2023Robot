@@ -39,10 +39,10 @@ public:
   void SetArmForCubeIntake();
   void SetArmForConeDrop();
 
-  frc2::CommandPtr SetArmToHomeCommand();
-  frc2::CommandPtr SetArmForMidCommand();
-  frc2::CommandPtr SetArmForHighCommand();
-  frc2::CommandPtr SetArmForCubeIntakeCommand();
+//  frc2::CommandPtr SetArmToHomeCommand();
+//  frc2::CommandPtr SetArmForMidCommand();
+//  frc2::CommandPtr SetArmForHighCommand();
+//  frc2::CommandPtr SetArmForCubeIntakeCommand();
 
   double GetPushRodArmEncoder();
   double GetWristServoSensor();

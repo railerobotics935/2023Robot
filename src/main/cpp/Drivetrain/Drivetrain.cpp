@@ -169,8 +169,8 @@ void Drivetrain::SetAnglePIDValues(double Kp, double Ki, double Kd, double offse
   m_yawPID.SetSetpoint(yawSetpoint);
 }
 
-frc2::CommandPtr Drivetrain::TestMethodCommand() {
-  // Inline construction of command goes here.
-  // Subsystem::RunOnce implicitly requires `this` subsystem.
-  return RunOnce([this] () {printf("Test Method Command has Ran\r\n");});
-}
+// frc2::CommandPtr Drivetrain::TestMethodCommand() {
+//   // Inline construction of command goes here.
+//   // Subsystem::RunOnce implicitly requires `this` subsystem.
+//   return RunOnce([this] () {printf("Test Method Command has Ran\r\n");});
+// }

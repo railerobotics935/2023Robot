@@ -13,6 +13,7 @@
 #include <frc/shuffleboard/ShuffleboardTab.h>
 
 #include <frc2/command/CommandScheduler.h>
+#include <frc2/command/Command.h>
 
 #include <pathplanner/lib/PathPlanner.h>
 #include <pathplanner/lib/commands/FollowPathWithEvents.h>
@@ -38,10 +39,6 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit() 
 {
-
-  autoTimer.Reset();
-  autoTimer.Start();
-
   m_autonomousCommand = m_container.GetAutonomousCommand();
   if (m_autonomousCommand) {
     m_autonomousCommand->Schedule();
