@@ -323,9 +323,10 @@ void Robot::DriveWithJoystick(bool fieldRelative, bool slowMode) {
   }
   else
   {    
-  driveJoystickAdjustedInputX = (m_driveController.GetRawAxis(2) * m_driveController.GetRawAxis(2));
-  driveJoystickAdjustedInputY = (m_driveController.GetRawAxis(4) * m_driveController.GetRawAxis(4));
+    driveJoystickAdjustedInputX = (m_driveController.GetRawAxis(2) * m_driveController.GetRawAxis(2));
+    driveJoystickAdjustedInputY = (m_driveController.GetRawAxis(4) * m_driveController.GetRawAxis(4));
   }
+  
   if (m_driveController.GetRawAxis(2) < 0)
     driveJoystickAdjustedInputX = -driveJoystickAdjustedInputX;
   if (m_driveController.GetRawAxis(4) < 0)
